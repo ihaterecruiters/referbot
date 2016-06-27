@@ -22,5 +22,6 @@ Slack is a great tool to do exactly that: <br>
 As an MVP, the slack integration will work with Recruitee, an Applicant Tracking System (CRM for vacancies/talent). <br>
 Both LevelUp/Ihaterecruiters as well as Recruitee are in same floor in the WeWork building.<br>
 
-it has been done before. Slack integration from another ATS (Workable) with Slack. https://blog.efounders.co/how-we-made-employee-referral-as-easy-as-a-slack-command-line-66a0ac24aad#.9k766a1d3
+it has been done before. Slack integration from another ATS (Workable) with Slack. https://blog.efounders.co/how-we-made-employee-referral-as-easy-as-a-slack-command-line-66a0ac24aad#.9k766a1d3<br>
 
+https://recruitee.com/ for an overview of the ATS we use as MVP.
