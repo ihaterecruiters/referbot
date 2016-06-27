@@ -25,3 +25,8 @@ Both LevelUp/Ihaterecruiters as well as Recruitee are in same floor in the WeWor
 it has been done before. Slack integration from another ATS (Workable) with Slack. https://blog.efounders.co/how-we-made-employee-referral-as-easy-as-a-slack-command-line-66a0ac24aad#.9k766a1d3<br>
 
 https://recruitee.com/ for an overview of the ATS we use as MVP.
+
+PERSONA'S<br>
+There will be different kind of users:<br>
+1/ REFERRER: a referring employee, basically could be any employee / member of the slack, but it IS the one referring new talent <br>
+2/ CTO: this is not the CTO per se, but it's definitely a hiring manager or recruiter. For simplicity's sake, I've thrown them together.<br>
