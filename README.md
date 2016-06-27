@@ -19,3 +19,5 @@ Slack is a great tool to do exactly that:
 1/ easy: no-login, no-interface, no learning curve, just a chatbot that asks questions
 2/ reminding: new vacancies, other people referring, new team members, are all triggers that can initiate a reminder message to the entire company from referbot.
 
+As an MVP, the slack integration will work with Recruitee, an Applicant Tracking System (CRM for vacancies/talent).
+Both LevelUp/Ihaterecruiters as well as Recruitee are in same floor in the WeWork building.
