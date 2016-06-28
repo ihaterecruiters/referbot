@@ -31,15 +31,17 @@ def getlist
     # p content[:careers_url]
     # puts
 
-    slack_webhook = ENV['SLACK_WEBHOOK_URL']
-    HTTParty.post slack_webhook, body: {"text" => content[:title], "username" => "refbot", "channel" => params[:channel_id]}.to_json, headers: {'content-type' => 'application/json'}
+    postback content[:title], params[:channel_id], params[:user_name]
+
+    # slack_webhook = ENV['SLACK_WEBHOOK_URL']
+    # HTTParty.post slack_webhook, body: {"text" => content[:title], "username" => "refbot", "channel" => params[:channel_id]}.to_json, headers: {'content-type' => 'application/json'}
   end
 end
 
 
 def postback message, channel, user
     slack_webhook = ENV['SLACK_WEBHOOK_URL']
-    HTTParty.post slack_webhook, body: {"text" => "Hello, " + params[:user_name], "username" => "refbot", "channel" => params[:channel_id]}.to_json, headers: {'content-type' => 'application/json'}
+    HTTParty.post slack_webhook, body: {"text" => message, "username" => "refbot", "channel" => params[:channel_id]}.to_json, headers: {'content-type' => 'application/json'}
 end
 
 # get '/refbot' do
