@@ -31,6 +31,7 @@ def getlist
     # p content[:careers_url]
     # puts
 
+    slack_webhook = ENV['SLACK_WEBHOOK_URL']
     HTTParty.post slack_webhook, body: {"text" => content[:title], "username" => "refbot", "channel" => params[:channel_id]}.to_json, headers: {'content-type' => 'application/json'}
   end
 end
