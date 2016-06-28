@@ -2,7 +2,7 @@ require 'sinatra'
 require 'httparty'
 require 'json'
 
-post '/refbot' do
+get '/refbot' do
   postback params[:text], params[:channel_id]
   status 200
 end
@@ -15,7 +15,7 @@ end
 # get '/refbot' do
 #   jsoncontent = {"text" => "refbot response", "username" => "refbot", "channel" => params[:channel_id]}
 #   newjson = JSON.pretty_generate(jsoncontent)
-#   File.open("this.json","w") do |f|
+#   File.open("userdata.json","w") do |f|
 #     f.write(newjson)
 #   end
 #   newjson
