@@ -16,5 +16,5 @@ contents.each do |content|
   p content [:id]
   p content[:title]
   p content[:careers_url]
-  #print "Offer ID: " content [:id] \n "Title: *bold*" content[:title]\n "URL: "[:careers_url]
+  #print "Offer ID: " content [:id] \n "Title: " "*"content[:title]"*"\n "URL: "[:careers_url]
 end
