@@ -18,7 +18,7 @@ post '/refbot' do
   when '2'
     postback userinput, params[:channel_id], params[:user_name]
     userinput = 2
-    postback userinput, params[:channel_id], params[:user_name]
+    # postback userinput, params[:channel_id], params[:user_name]
     break
   end
   status 200
