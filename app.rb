@@ -2,7 +2,7 @@ require 'sinatra'
 require 'httparty'
 require 'json'
 
-get '/refbot' do
+post '/refbot' do
   postback params[:text], params[:channel_id]
   status 200
 end
