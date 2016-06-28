@@ -3,7 +3,7 @@ require 'httparty'
 require 'json'
 
 get '/refbot' do
-  postback params[:text], params[:channel_id], params[:username]
+  postback params[:text], params[:channel_id]
   status 200
 end
 
