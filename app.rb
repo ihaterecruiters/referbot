@@ -44,5 +44,5 @@ end
 
 def priv_postback message, channel, user
     slack_webhook = ENV['SLACK_WEBHOOK_URL']
-    HTTParty.post slack_webhook, body: {"text" => say("/msg " + "@" + params[:user_name] + " " + message), "username" => "refbot", "channel" => params[:channel_id]}.to_json, headers: {'content-type' => 'application/json'}
+    HTTParty.post slack_webhook, body: {"text" => "/msg " + "@" + params[:user_name] + " " + message, "username" => "refbot", "channel" => params[:user_name]]}.to_json, headers: {'content-type' => 'application/json'}
 end
