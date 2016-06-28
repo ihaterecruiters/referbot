@@ -2,9 +2,19 @@ require 'sinatra'
 require 'httparty'
 require 'json'
 
+# post '/refbot' do
+#   postback params[:text], params[:channel_id], params[:user_name]
+#   status 200
+# end
+
 post '/refbot' do
-  postback params[:text], params[:channel_id], params[:user_name]
+  # slack_data = params[:text], params[:channel_id], params[:user_name]
+  input = params[:text].to_s.split(' ')
+  case input[0].downcase
+  when 'hello'
+    postback params[:text], params[:channel_id], params[:user_name]
   status 200
+  end
 end
 
 def postback message, channel, user
