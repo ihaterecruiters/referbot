@@ -6,7 +6,7 @@ post '/refbot' do
   input = params[:text].to_s.split(' ')
   case input[0].downcase
   when 'hello'
-    priv_postback "Hello " + params[:user_name], params[:channel_id], params[:user_name]
+    priv_postback "Hello " + params[:channel_id], params[:channel_id], params[:user_name]
     break
   when 'list'
     getlist
