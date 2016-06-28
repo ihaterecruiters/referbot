@@ -11,15 +11,6 @@ post '/refbot' do
   when 'list'
     getlist
     break
-  when '1'
-    write_json 1
-    # postback userinput, params[:channel_id], params[:user_name]
-    break
-  when '2'
-    # postback userinput, params[:channel_id], params[:user_name]
-    write_json 2
-    # postback userinput, params[:channel_id], params[:user_name]
-    break
   end
   status 200
 end
@@ -36,14 +27,14 @@ def getlist
 end
 
 
-def write_json number
-  jsoncontent = {"text" => number.to_s, "username" => "refbot", "channel" => params[:channel_id]}
-  newjson = JSON.pretty_generate(jsoncontent)
-  File.open("userdata.json","w") do |f|
-    f.write(newjson)
-  end
-  newjson
-end
+# def write_json
+#   jsoncontent = {"text" => "refbot response", "username" => "refbot", "channel" => params[:channel_id]}
+#   newjson = JSON.pretty_generate(jsoncontent)
+#   File.open("userdata.json","w") do |f|
+#     f.write(newjson)
+#   end
+#   newjson
+# end
 
 
 def postback message, channel, user
