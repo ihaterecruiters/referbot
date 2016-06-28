@@ -12,6 +12,7 @@ post '/refbot' do
   case input[0].downcase
   when 'hello'
     postback params[:text], params[:channel_id], params[:user_name]
+    break
   when 'list'
     getlist
   status 200
