@@ -9,7 +9,7 @@ end
 
 def postback message, channel
     slack_webhook = ENV['SLACK_WEBHOOK_URL']
-    HTTParty.post slack_webhook, body: {"text" => params[:username], "username" => "refbot", "channel" => params[:channel_id]}.to_json, headers: {'content-type' => 'application/json'}
+    HTTParty.post slack_webhook, body: {"text" => "Hello", "username" => "refbot", "channel" => params[:channel_id]}.to_json, headers: {'content-type' => 'application/json'}
 end
 
 # get '/refbot' do
