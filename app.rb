@@ -6,7 +6,7 @@ post '/refbot' do
   input = params[:text].to_s.split(' ')
   case input[0].downcase
   when 'hello'
-    priv_postback "Hello " + params[:channel], params[:channel_id], params[:user_name]
+    priv_postback "Hello " + params[:channel_id], params[:channel_id], params[:user_name]
     break
   when 'list'
     getlist
@@ -43,7 +43,6 @@ def postback message, channel, user
 end
 
 def priv_postback message, channel, user
-    atuser = "@" + user
     slack_webhook = ENV['SLACK_WEBHOOK_URL']
-    HTTParty.post slack_webhook, body: {"text" => message, "username" => "refbot", "channel" => atuser }.to_json, headers: {'content-type' => 'application/json'}
+    HTTParty.post slack_webhook, body: {"text" => message, "username" => "refbot", "channel" => "D1CUG5KU4" }.to_json, headers: {'content-type' => 'application/json'}
 end
