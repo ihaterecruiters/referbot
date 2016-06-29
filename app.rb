@@ -6,7 +6,7 @@ require 'redis'
 post '/refbot' do
 
   redis = Redis.new
-  # redis.flushdb
+  redis.flushdb
   # redis.set "foo", [1, 2, 3].to_json
   # redis.set("mykey", params[:text])
   # sentence = redis.get("mykey")
@@ -17,12 +17,12 @@ post '/refbot' do
   when 'save'
     savedword = redis.set("savedword" + input[1], input[1])
     if savedword == "OK"
-      postback "Saved: " + input[1] + " | Database size: " + redis.dbsize.to_s, params[:channel_id], params[:user_name]
+      postback "saved: " + input[1] + " | database size: " + redis.dbsize.to_s, params[:channel_id], params[:user_name]
     end
     break
   when 'recover'
     recoveredword = redis.get("savedword" + input[1])
-    postback "Recovered: " + recoveredword + " | Database size: " + redis.dbsize.to_s, params[:channel_id], params[:user_name]
+    postback "recovered: " + recoveredword + " | database size: " + redis.dbsize.to_s, params[:channel_id], params[:user_name]
     # getlist
     break
   end
