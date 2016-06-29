@@ -15,7 +15,7 @@ if input[0].downcase == "add"
   current_time = Time.now.to_s
   newcandidate = redis.hmset("candidate" + current_time)
   status 200
-  # next
+  next
 elsif input[0].downcase != "add"
   if newcandidate == "OK"
     postback "saved: " + redis.hmget("candidate" + current_time) + " | database size: " + redis.dbsize.to_s, params[:channel_id], params[:user_name]
