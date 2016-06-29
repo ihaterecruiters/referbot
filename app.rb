@@ -11,13 +11,13 @@ post '/refbot' do
 
 if input[0].downcase == "add"
   redis.hmset("candidate", "name", "empty")
-  postback "saved: " + redis.hmget("candidate", "name").to_s + " | database size: " + redis.dbsize.to_s, params[:channel_id], params[:user_name]
+  # postback "saved: " + redis.hmget("candidate", "name").to_s + " | database size: " + redis.dbsize.to_s, params[:channel_id], params[:user_name]
   if redis.hmget("candidate", "name") == ["empty"]
     postback "Enter the candidates name: ", params[:channel_id], params[:user_name]
     input2 = params[:text].to_s.split(' ')
     redis.hmset("candidate", "name", input2[0].to_s)
     if redis.hmget("candidate", "name").to_s != ["empty"]
-      postback "Received name.", params[:channel_id], params[:user_name]
+      postback "Received name: " + redis.hmget("candidate", "name").to_s, params[:channel_id], params[:user_name]
     end
   end
     status 200
