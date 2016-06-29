@@ -11,7 +11,7 @@ post '/refbot' do
 
 if input[0].downcase == "new"
   redis.hmset(input[1], "name", input[2], "number", input[3], "email", input[4])
-  postback redis.hmget(input[1]).to_s, params[:channel_id], params[:user_name]
+  postback redis.hmget(input[1].to_s), params[:channel_id], params[:user_name]
   status 200
 end
 
