@@ -9,6 +9,7 @@ post '/refbot' do
 
   input = params[:text].to_s.split(' ')
 
+while true
 if input[0].downcase == "add"
   postback "Enter the candidates name: ", params[:channel_id], params[:user_name]
   status 200
@@ -19,6 +20,8 @@ elsif input[0].downcase != "add"
     postback "saved: " + redis.hmget("candidate" + current_time).to_s + " | database size: " + redis.dbsize.to_s, params[:channel_id], params[:user_name]
   end
   status 200
+  break
+end
 end
 end
 
