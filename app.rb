@@ -5,11 +5,11 @@ require 'redis'
 
 post '/refbot' do
 
-  redis = Redis.new
+  # redis = Redis.new
 
   # redis.set "foo", [1, 2, 3].to_json
-  redis.set("mykey", "Hi from redis!")
-  sentence = redis.get("mykey")
+  # redis.set("mykey", "Hi from redis!")
+  # sentence = redis.get("mykey")
   # redis_output = JSON.parse(redis.get("foo"))
 
   input = params[:text].to_s.split(' ')
