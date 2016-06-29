@@ -9,22 +9,28 @@ post '/refbot' do
 
   input = params[:text].to_s.split(' ')
 
-
-case input[0].downcase
-  when 'add'
-    postback "Enter the candidates name: ", params[:channel_id], params[:user_name]
-
-    add = true
-    # break
+if input[0].downcase == "add"
+  postback "Enter the candidates name: ", params[:channel_id], params[:user_name]
+  status 200
+elsif input[0].downcase != "add"
+  savedword = redis.hmset("candidate", "name", input[0].to_s)
+  if savedword == "OK"
+    postback "saved: " + savedword.to_s + " | database size: " + redis.dbsize.to_s, params[:channel_id], params[:user_name]
+  end
   status 200
 end
-
-if add == true
-  savedword = redis.hmset("candidate", "name", input[0].to_s)
-  postback "saved: " + savedword.to_s + " | database size: " + redis.dbsize.to_s, params[:channel_id], params[:user_name]
 end
-
-end
+# case input[0].downcase
+#   when 'add'
+#     postback "Enter the candidates name: ", params[:channel_id], params[:user_name]
+#     savedword = redis.hmset("candidate", "name", input[0].to_s)
+#     if add == true
+#       postback "saved: " + savedword.to_s + " | database size: " + redis.dbsize.to_s, params[:channel_id], params[:user_name]
+#     end
+#     # break
+#   status 200
+# end
+# end
 
 
 #   case input[0].downcase
