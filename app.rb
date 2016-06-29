@@ -15,14 +15,14 @@ post '/refbot' do
   input = params[:text].to_s.split(' ')
   case input[0].downcase
   when 'save'
-    savedword1 = redis.set("savedword" + input[1], input[1])
-    if savedword1 == "OK"
+    savedword = redis.set("savedword" + input[1], input[1])
+    if savedword == "OK"
       postback "Saved: " + input[1], params[:channel_id], params[:user_name]
     end
     break
   when 'recover'
-    recoveredword1 = redis.get("savedword")
-    postback "Recovered: " + recoveredword1 + " database size: " + redis.dbsize.to_s, params[:channel_id], params[:user_name]
+    recoveredword = redis.get("savedword" + input[1])
+    postback "Recovered: " + recoveredword + " database size: " + redis.dbsize.to_s, params[:channel_id], params[:user_name]
     # getlist
     break
   end
