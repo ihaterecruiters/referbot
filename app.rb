@@ -16,7 +16,7 @@ post '/refbot' do
   case input[0].downcase
   when 'save'
     redis.set("savedword", input[1].downcase)
-    postback "Saved: " + savedword1, params[:channel_id], params[:user_name]
+    # postback "Saved: " + savedword1, params[:channel_id], params[:user_name]
     break
   when 'recover'
     recoveredword1 = redis.get("savedword")
