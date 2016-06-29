@@ -6,28 +6,40 @@ require 'redis'
 post '/refbot' do
 
   redis = Redis.new
-  # redis.flushdb
-  # redis.set "foo", [1, 2, 3].to_json
-  # redis.set("mykey", params[:text])
-  # sentence = redis.get("mykey")
-  # redis_output = JSON.parse(redis.get("foo"))
 
   input = params[:text].to_s.split(' ')
-  case input[0].downcase
-  when 'save'
-    savedword = redis.set("savedword" + input[1], input[1])
+
+
+case input[0].downcase
+  when 'add'
+    add = 0
+    postback "Enter the candidates name: ", params[:channel_id], params[:user_name]
+    savedword = redis.hmset("candidate", "name", input[0].to_s)
     if savedword == "OK"
-      postback "saved: " + input[1] + " | database size: " + redis.dbsize.to_s, params[:channel_id], params[:user_name]
+      postback "saved: " + " | database size: " + redis.dbsize.to_s, params[:channel_id], params[:user_name]
+      add = 1
     end
-    break
-  when 'recover'
-    recoveredword = redis.get("savedword" + input[1])
-    postback "recovered: " + recoveredword + " | database size: " + redis.dbsize.to_s, params[:channel_id], params[:user_name]
-    # getlist
-    break
-  end
+    # break
   status 200
 end
+end
+
+
+#   case input[0].downcase
+#   when 'save'
+#     savedword = redis.set("savedword" + input[1], input[1])
+#     if savedword == "OK"
+#       postback "saved: " + input[1] + " | database size: " + redis.dbsize.to_s, params[:channel_id], params[:user_name]
+#     end
+#     break
+#   when 'recover'
+#     recoveredword = redis.get("savedword" + input[1])
+#     postback "recovered: " + recoveredword + " | database size: " + redis.dbsize.to_s, params[:channel_id], params[:user_name]
+#     # getlist
+#     break
+#   end
+#   status 200
+# end
 
 def getlist
   receivelist = HTTParty.get('https://api.recruitee.com/c/levelupventures/careers/offers').to_json
