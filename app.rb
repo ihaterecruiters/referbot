@@ -17,12 +17,12 @@ post '/refbot' do
   when 'save'
     savedword = redis.set("savedword" + input[1], input[1])
     if savedword == "OK"
-      postback "Saved: " + input[1], params[:channel_id], params[:user_name]
+      postback "Saved: " + input[1] + " | Database size: " + redis.dbsize.to_s, params[:channel_id], params[:user_name]
     end
     break
   when 'recover'
     recoveredword = redis.get("savedword" + input[1])
-    postback "Recovered: " + recoveredword + " database size: " + redis.dbsize.to_s, params[:channel_id], params[:user_name]
+    postback "Recovered: " + recoveredword + " | Database size: " + redis.dbsize.to_s, params[:channel_id], params[:user_name]
     # getlist
     break
   end
