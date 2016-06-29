@@ -9,10 +9,11 @@ post '/refbot' do
 
   input = params[:text].to_s.split(' ')
 
-if input[0].downcase == "new"
-  redis.hmset(input[1], "name", input[2], "number", input[3], "email", input[4])
-  postback redis.hmget(input[1], "name", "number", "email").to_s, params[:channel_id], params[:user_name]
-  status 200
+  if input[0].downcase == "new"
+    redis.hmset(input[1], "name", input[2], "number", input[3], "email", input[4])
+    postback redis.hmget(input[1], "name", "number", "email").to_s, params[:channel_id], params[:user_name]
+    # status 200
+  end
 end
 
 # if input[0].downcase == "add"
@@ -31,7 +32,6 @@ end
 # elsif input[0].downcase != "add"
 #   status 200
 #   break
-end
 
 # if input[0].downcase == "add"
 #   postback "Enter the candidates name: ", params[:channel_id], params[:user_name]
