@@ -22,7 +22,7 @@ post '/refbot' do
     break
   when 'recover'
     recoveredword1 = redis.get("savedword")
-    postback "Recovered: " + recoveredword1, params[:channel_id], params[:user_name]
+    postback "Recovered: " + recoveredword1 + " database size: " + redis.dbsize, params[:channel_id], params[:user_name]
     # getlist
     break
   end
