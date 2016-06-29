@@ -96,7 +96,9 @@ def getlist
   contents = test1[:offers]
 
   contents.each do |content|
-    postback content[:id] + content[:title] + content[:careers_url], params[:channel_id], params[:user_name]
+    message = "#{content[:id]}, #{content[:title]}  \n   visit it at: #{content[:careers_url]}"
+   postback message, params[:channel_id], params[:user_name]
+    # postback content[:id] + content[:title] + content[:careers_url], params[:channel_id], params[:user_name]
   end
 end
 
