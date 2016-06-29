@@ -15,7 +15,7 @@ if input[0].downcase == "add"
 elsif input[0].downcase != "add"
   savedword = redis.hmset("candidate", "name", input[0].to_s)
   if savedword == "OK"
-    postback "saved: " + savedword.to_s + " | database size: " + redis.dbsize.to_s, params[:channel_id], params[:user_name]
+    postback "saved: " + hmget("candidate", "name") + " | database size: " + redis.dbsize.to_s, params[:channel_id], params[:user_name]
   end
   status 200
 end
