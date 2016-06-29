@@ -15,9 +15,9 @@ post '/refbot' do
   input = params[:text].to_s.split(' ')
   case input[0].downcase
   when 'save'
-    savedword1 = redis.set("savedword", input[1].downcase)
+    savedword1 = redis.set("savedword", input[1])
     if savedword1 == "OK"
-      postback "Saved: " + params[:text], params[:channel_id], params[:user_name]
+      postback "Saved: " + input[1], params[:channel_id], params[:user_name]
     end
     break
   when 'recover'
