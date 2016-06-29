@@ -6,7 +6,10 @@ post '/refbot' do
   input = params[:text].to_s.split(' ')
   case input[0].downcase
   when 'hello'
-    priv_postback "Hello " + params[:user_name], params[:channel_id], params[:user_name]
+    priv_postback "Hello " + params[:user_name] + " welcome to referbot! Type /refbot help. for a list of all refbot keywords", params[:channel_id], params[:user_name]
+    break
+  when 'help'
+    priv_postback params[:user_name] + "This is a list off all the commands: /refbot hello, /refbot help, /refbot list, /refbot add", params[:channel_id], params[:user_name]
     break
   when 'list'
     getlist
