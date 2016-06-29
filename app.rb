@@ -1,6 +1,8 @@
 require 'sinatra'
 require 'httparty'
 require 'json'
+require 'sinatra'
+
 
 post '/refbot' do
   input = params[:text].to_s.split(' ')
@@ -35,14 +37,3 @@ end
 #   end
 #   newjson
 # end
-
-
-def postback message, channel, user
-    slack_webhook = ENV['SLACK_WEBHOOK_URL']
-    HTTParty.post slack_webhook, body: {"text" => message, "username" => "refbot", "channel" => params[:channel_id]}.to_json, headers: {'content-type' => 'application/json'}
-end
-
-def priv_postback message, channel, user
-    slack_webhook = ENV['SLACK_WEBHOOK_URL']
-    HTTParty.post slack_webhook, body: {"text" => message, "username" => "refbot", "channel" => params[:channel_id] }.to_json, headers: {'content-type' => 'application/json'}
-end
