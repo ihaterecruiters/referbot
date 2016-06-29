@@ -12,12 +12,13 @@ post '/refbot' do
 while true
 if input[0].downcase == "add"
   postback "Enter the candidates name: ", params[:channel_id], params[:user_name]
+  current_time = Time.now.to_s
+  newcandidate = redis.hmset("candidate" + current_time)
   status 200
-  current_time = Time.now
-  newcandidate = redis.hmset("candidate" + current_time.to_s)
+  # next
 elsif input[0].downcase != "add"
   if newcandidate == "OK"
-    postback "saved: " + redis.hmget("candidate" + current_time).to_s + " | database size: " + redis.dbsize.to_s, params[:channel_id], params[:user_name]
+    postback "saved: " + redis.hmget("candidate" + current_time) + " | database size: " + redis.dbsize.to_s, params[:channel_id], params[:user_name]
   end
   status 200
   break
