@@ -14,7 +14,7 @@ post '/refbot' do
     priv_postback "Hello " + params[:user_name] + " welcome to referbot! Type /refbot help. for a list of all refbot keywords.", params[:channel_id], params[:user_name]
     break
   when 'help'
-    priv_postback "This is a list off all the commands: /refbot hello, /refbot help, /refbot list, /refbot add.", params[:channel_id], params[:user_name]
+    priv_postback "This is a list off all the commands: /refbot hello, /refbot help, /refbot list, /refbot new.", params[:channel_id], params[:user_name]
     break
   when 'list'
     getlist
@@ -98,7 +98,6 @@ def getlist
   contents.each do |content|
     message = "#{content[:id]}, #{content[:title]}  \n   visit it at: #{content[:careers_url]}"
    postback message, params[:channel_id], params[:user_name]
-    # postback content[:id] + content[:title] + content[:careers_url], params[:channel_id], params[:user_name]
   end
 end
 
