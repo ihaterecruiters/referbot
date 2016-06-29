@@ -96,7 +96,7 @@ def getlist
   contents = test1[:offers]
 
   contents.each do |content|
-    postback content[:title], params[:channel_id], params[:user_name]
+    postback content[:id, :title, :careers_url], params[:channel_id], params[:user_name]
   end
 end
 
