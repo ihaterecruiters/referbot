@@ -1,12 +1,21 @@
 require 'sinatra'
 require 'httparty'
 require 'json'
+require 'redis'
 
 post '/refbot' do
+
+  redis = Redis.new
+
+  redis.set "foo", [1, 2, 3].to_json
+
+  redis_output = JSON.parse(redis.get("foo"))
+
   input = params[:text].to_s.split(' ')
   case input[0].downcase
   when 'hello'
-    priv_postback "Hello " + params[:user_name], params[:channel_id], params[:user_name]
+    priv_postback redis_output, params[:channel_id], params[:user_name]
+    # priv_postback "Hello " + params[:user_name], params[:channel_id], params[:user_name]
     break
   when 'list'
     getlist
