@@ -46,3 +46,21 @@ def priv_postback message, channel, user
     slack_webhook = ENV['SLACK_WEBHOOK_URL']
     HTTParty.post slack_webhook, body: {"text" => message, "username" => "refbot", "channel" => params[:channel_id] }.to_json, headers: {'content-type' => 'application/json'}
 end
+
+
+def post_candidate
+
+  url = "https://api.recruitee.com/c/referbot/careers/offers/designer-voorbeeld-vacature/candidates.json"
+  candidate = {
+    name: "Jezus Smith",
+    email: "Jezus.s@code.co",
+    phone: "3984093808098",
+    remote_cv_url: "http://cd.sseu.re/welcome-pdf.pdf"
+  }
+
+  HTTParty.post(url,
+    body: { candidate: candidate }.to_json,
+    headers: { "Content-Type" => "application/json" })
+
+
+end
