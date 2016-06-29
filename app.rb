@@ -8,7 +8,7 @@ post '/refbot' do
   redis = Redis.new
 
   # redis.set "foo", [1, 2, 3].to_json
-  redis.set("mykey", content[:title])
+  redis.set("mykey", content[:user_name])
   sentence = redis.get("mykey")
   # redis_output = JSON.parse(redis.get("foo"))
 
