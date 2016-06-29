@@ -6,7 +6,7 @@ require 'redis'
 post '/refbot' do
 
   redis = Redis.new
-
+  redis.flushdb
   # redis.set "foo", [1, 2, 3].to_json
   # redis.set("mykey", params[:text])
   # sentence = redis.get("mykey")
