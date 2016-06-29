@@ -8,17 +8,20 @@ post '/refbot' do
   redis = Redis.new
 
   # redis.set "foo", [1, 2, 3].to_json
-  redis.set("mykey", params[:text])
-  sentence = redis.get("mykey")
+  # redis.set("mykey", params[:text])
+  # sentence = redis.get("mykey")
   # redis_output = JSON.parse(redis.get("foo"))
 
   input = params[:text].to_s.split(' ')
   case input[0].downcase
-  when 'hello'
-    postback sentence, params[:channel_id], params[:user_name]
+  when 'save'
+    redis.set("savedword", input[1].downcase)
+    postback "Saved :" + savedword1, params[:channel_id], params[:user_name]
     break
-  when 'list'
-    getlist
+  when 'recover'
+    recoveredword1 = redis.get("savedword")
+    postback "Recovered :" + recoveredword1, params[:channel_id], params[:user_name]
+    # getlist
     break
   end
   status 200
