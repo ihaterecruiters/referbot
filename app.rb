@@ -14,7 +14,7 @@ post '/refbot' do
     postback "Hello " + params[:user_name] + " welcome to referbot! Type /refbot help. for a list of all refbot keywords.", params[:channel_id], params[:user_name]
     break
   when 'help'
-    postback "This is a list off all the commands: /refbot hello, /refbot help, /refbot list, /refbot new, /refbot new name email phone", params[:channel_id], params[:user_name]
+    postback "This is a list off all the commands: /refbot hello, /refbot help, /refbot list, /refbot new, /refbot new first-name last-name email phone", params[:channel_id], params[:user_name]
     break
   when 'list'
     getlist
@@ -41,25 +41,6 @@ post '/refbot' do
   end
 end
 
-#   if input[0].downcase == "new"
-#     redis.hmset(input[1], "name", input[2], "email", input[3], "phone", input[4])
-#     postback redis.hmget(input[1], "name", "email", "phone").to_s, params[:channel_id], params[:user_name]
-#
-#     url = "https://api.recruitee.com/c/referbot/careers/offers/designer-voorbeeld-vacature/candidates.json"
-#     candidate = {
-#       name: redis.hmget(input[1], "name")[0].to_s,
-#       email: redis.hmget(input[1], "email")[0].to_s,
-#       phone: redis.hmget(input[1], "phone")[0].to_s,
-#       remote_cv_url: "http://cd.sseu.re/welcome-pdf.pdf"
-#     }
-#
-#     HTTParty.post(url,
-#       body: { candidate: candidate }.to_json,
-#       headers: { "content-type" => "application/json" })
-#
-#     status 200
-#   end
-# end
 
 # def post_candidate
 #   url = "https://api.recruitee.com/c/referbot/careers/offers/designer-voorbeeld-vacature/candidates.json"
