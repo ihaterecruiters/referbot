@@ -13,7 +13,8 @@ post '/refbot' do
   when 'hello'
     # postback "Hello " + params[:user_name] + " welcome to referbot! Type /refbot help. for a list of all refbot keywords.", params[:channel_id], params[:user_name]
     if !redis.exists(params[:user_id])
-      postback params[:user_id] + " exists in the database.", params[:channel_id], params[:user_name]
+      redis.hmset(params[:user_id], "firstname", input[2], "lastname", input[3], "email", input[4], "phone", input[5], "vacancy", input[6])
+      postback params[:user_id] + " does not exist in the database. Creating...", params[:channel_id], params[:user_name]
     end
     break
   when 'help'
