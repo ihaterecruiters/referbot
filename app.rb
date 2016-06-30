@@ -43,11 +43,10 @@ post '/refbot' do
     # redis.mapped_hmset(params[:user_id], "step", "2")
     # firstname = redis.hmget(params[:user_id], "candidate_0"["firstname"])
     # firstnamedb = redis.hmget(params[:user_id], "candidate_0")
-    firstnameget = ""
     redis.mapped_hmset(params[:user_id], {"candidate_0": {firstname: input[1], lastname: "", email: "", phone: "", vacancy: ""}, "step": "1"})
 
     firstnameget = redis.hmget(params[:user_id], "candidate_0"["firstname"])
-    postback "Name: " + firstnameget[0].to_s, params[:channel_id], params[:user_name]
+    postback "Name: " + firstnameget[1].to_s, params[:channel_id], params[:user_name]
   end
 
   # if input[0].downcase == "new"
