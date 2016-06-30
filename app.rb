@@ -11,6 +11,7 @@ post '/refbot' do
 
   case input[0].downcase
   when 'hello'
+    # currentpost
     postback "Hello " + params[:user_name] + " welcome to referbot! Type /refbot help. for a list of all refbot keywords.", params[:channel_id], params[:user_name]
     break
   when 'help'
@@ -21,27 +22,55 @@ post '/refbot' do
     break
   end
 
+candidate_content = redis.hmget(params[:user_id], "candidate_0")
+
   if input[0].downcase == "new"
-    redis.hmset(input[1], "firstname", input[2], "lastname", input[3], "email", input[4], "phone", input[5], "vacancy", input[6])
-    # postback redis.hmget(input[1], "firstname", "lastname", "email", "phone", "vacancy").to_s, params[:channel_id], params[:user_name]
+    if !redis.exists(params[:user_id])
+      redis.mapped_hmset(params[:user_id], {"candidate_0": {firstname: "", lastname: "", email: "", phone: "", vacancy: ""}, "step": "1"})
+      postback params[:user_id] + " profile does not exist in the database. Created. Type '/refbot name <candidate name>' to start adding a new candidate.", params[:channel_id], params[:user_name]
+    elsif redis.exists(params[:user_id])
+      postback params[:user_id] + " profile exists in the database. Type '/refbot name <candidate name>' to start adding a new candidate. Step 1/5.", params[:channel_id], params[:user_name]
+    end
+  end
 
-    url = "https://api.recruitee.com/c/referbot/careers/offers/#{redis.hmget(input[1], "vacancy")[0].to_s}/candidates.json"
-    candidate = {
-      name: redis.hmget(input[1], "firstname")[0].to_s + " " + redis.hmget(input[1], "lastname")[0].to_s,
-      email: redis.hmget(input[1], "email")[0].to_s,
-      phone: redis.hmget(input[1], "phone")[0].to_s,
-      remote_cv_url: "http://cd.sseu.re/welcome-pdf.pdf"
-    }
+  if input[0].downcase == "reset"
+    redis.mapped_hmset(params[:user_id], {"candidate_0": {firstname: "", lastname: "", email: "", phone: "", vacancy: ""}, "step": "1"})
+  end
 
-    HTTParty.post(url,
-      body: { candidate: candidate }.to_json,
-      headers: { "content-type" => "application/json" })
-
-      postback params[:user_name].to_s + " has just refered a new candidate for the following vacancy: https://referbot.recruitee.com/o/#{redis.hmget(input[1], "vacancy")[0].to_s}", params[:channel_id], params[:user_name]
-
-    status 200
+  if input[0].downcase == "name" and eval(candidate_content[0])[:firstname].to_s == ""
+    redis.mapped_hmset(params[:user_id], {"candidate_0": {firstname: input[1], lastname: "", email: "", phone: "", vacancy: ""}, "step": "2"})
+    firstnameget = redis.hmget(params[:user_id], "candidate_0")
+    postback "Added name: " + eval(firstnameget[0])[:firstname].to_s + ". Type '/refbot email <candidate email>' to add an email address. Step 2/5.", params[:channel_id], params[:user_name]
+  elsif input[0].downcase == "name" and eval(candidate_content[0])[:firstname].to_s != ""
+    redis.mapped_hmset(params[:user_id], {"candidate_0": {firstname: input[1], lastname: "", email: "", phone: "", vacancy: ""}, "step": "2"})
+    firstnameget = redis.hmget(params[:user_id], "candidate_0")
+    postback "Changed name to: " + eval(firstnameget[0])[:firstname].to_s + ". Type '/refbot email <candidate email>' to add an email address. Step 2/5.", params[:channel_id], params[:user_name]
   end
 end
+
+
+
+
+  # if input[0].downcase == "new"
+  #   redis.hmset(input[1], "firstname", input[2], "lastname", input[3], "email", input[4], "phone", input[5], "vacancy", input[6])
+  #   # postback redis.hmget(input[1], "firstname", "lastname", "email", "phone", "vacancy").to_s, params[:channel_id], params[:user_name]
+  #
+  #   url = "https://api.recruitee.com/c/referbot/careers/offers/#{redis.hmget(input[1], "vacancy")[0].to_s}/candidates.json"
+  #   candidate = {
+  #     name: redis.hmget(input[1], "firstname")[0].to_s + " " + redis.hmget(input[1], "lastname")[0].to_s,
+  #     email: redis.hmget(input[1], "email")[0].to_s,
+  #     phone: redis.hmget(input[1], "phone")[0].to_s,
+  #     remote_cv_url: "http://cd.sseu.re/welcome-pdf.pdf"
+  #   }
+  #
+  #   HTTParty.post(url,
+  #     body: { candidate: candidate }.to_json,
+  #     headers: { "content-type" => "application/json" })
+  #
+  #     postback params[:user_name].to_s + " has just refered a new candidate for the following vacancy: https://referbot.recruitee.com/o/#{redis.hmget(input[1], "vacancy")[0].to_s}", params[:channel_id], params[:user_name]
+  #
+  #   status 200
+  # end
 
 
 def getlist
@@ -53,9 +82,24 @@ def getlist
 
   contents.each do |content|
     message = "#{content[:id]}, #{content[:title]} \n #{content[:careers_url]}"
-    postback "The following vacancies are open:\n" + message, params[:channel_id], params[:user_name]
+    postback message, params[:channel_id], params[:user_name]
   end
 end
+
+def currentpost
+  test1 = JSON.parse(receivelist, symbolize_names: true)
+  contents = test1[:offers]
+
+  current_post = []
+
+  contents.each do |content|
+    current_post << content[:id]
+
+  end
+  postback current_post.to_s, params[:channel_id], params[:user_name]
+  redis.set post current_post.count
+end
+
 
 
 # def write_json
