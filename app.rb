@@ -15,6 +15,8 @@ post '/refbot' do
     if !redis.exists(params[:user_id])
       redis.hmset(params[:user_id], "firstname", input[2], "lastname", input[3], "email", input[4], "phone", input[5], "vacancy", input[6])
       postback params[:user_id] + " does not exist in the database. Creating...", params[:channel_id], params[:user_name]
+    elif redis.exists(params[:user_id])
+      postback params[:user_id] + " exists in the database. Adding candidate name (step 1/6)", params[:channel_id], params[:user_name]
     end
     break
   when 'help'
