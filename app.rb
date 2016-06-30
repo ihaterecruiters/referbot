@@ -5,6 +5,8 @@ require 'redis'
 
 post '/refbot' do
 
+  redis.flushdb
+
   redis = Redis.new
 
   input = params[:text].to_s.split(' ')
