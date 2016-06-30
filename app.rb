@@ -12,11 +12,13 @@ post '/refbot' do
   case input[0].downcase
   when 'hello'
     message = "Hello " + params[:user_name] + " welcome to referbot! Type /refbot help. for a list of all refbot keywords."
-    message = checklist
+    notification = checklist
   when 'help'
     message = "This is a list off all the commands: /refbot hello, /refbot help, /refbot list, /refbot new, /refbot new candidate first-name last-name email phone vacancy"
+    notification = checklist
   when 'list'
     message = getlist
+    notification = checklist
 
 
   # when 'new'
@@ -44,10 +46,14 @@ post '/refbot' do
   json_message = {"text" => message, params[:user_name] => "refbot", "channel" => params[:channel_id]}
   if ENV['DEV_ENV'] == 'test'
     content_type :json
+    x = "#{json_message[:text]}"
+   json_message[:text] = "#{message} + #{notification}"
    json_message.to_json
   else
     slack_webhook = ENV['SLACK_WEBHOOK_URL']
+    notif_message = {"text" => notification, params[:user_name] => "refbot", "channel" => params[:channel_id]}
     HTTParty.post slack_webhook, body: json_message.to_json, headers: {'content-type' => 'application/json'}
+    HTTParty.post slack_webhook, body: notif_message.to_json, headers: {'content-type' => 'application/json'}
   end
 end
 
