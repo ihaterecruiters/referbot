@@ -25,12 +25,12 @@ post '/refbot' do
     if !redis.exists(params[:user_id])
       redis.hmset(params[:user_id], "candidate_0", {firstname: "", lastname: "", email: "", phone: "", vacancy: ""}, "step", "1")
       postback params[:user_id] + " does not exist in the database. Created. Type '/refbot name: <candidate name>' to start adding a new candidate.", params[:channel_id], params[:user_name]
-    elsif redis.hmget(params[:user_id], "step")[0].to_s == "1"
-      redis.hmset(params[:user_id], "step", "2")
-      postback params[:user_id] + " exists in the database. Adding candidate (step 1/6). Name: ", params[:channel_id], params[:user_name]
-    elsif redis.hmget(params[:user_id], "step")[0].to_s == "2"
-      redis.hmset(params[:user_id], "step", "3")
-      postback params[:user_id] + " Added name. Adding candidate (step 2/6). Email: ", params[:channel_id], params[:user_name]
+    # elsif redis.hmget(params[:user_id], "step")[0].to_s == "1"
+    #   redis.hmset(params[:user_id], "step", "2")
+    #   postback params[:user_id] + " exists in the database. Adding candidate (step 1/6). Name: ", params[:channel_id], params[:user_name]
+    # elsif redis.hmget(params[:user_id], "step")[0].to_s == "2"
+    #   redis.hmset(params[:user_id], "step", "3")
+    #   postback params[:user_id] + " Added name. Adding candidate (step 2/6). Email: ", params[:channel_id], params[:user_name]
     end
   end
 
