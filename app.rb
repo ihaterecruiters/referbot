@@ -37,8 +37,6 @@ post '/refbot' do
       body: { candidate: candidate }.to_json,
       headers: { "content-type" => "application/json" })
 
-      # postback "Added " + redis.hmget(input[1], "firstname")[0].to_s + " " + redis.hmget(input[1], "lastname")[0].to_s + " to vacancy: " + redis.hmget(input[1], "vacancy")[0].to_s, params[:channel_id], params[:user_name]
-
       postback params[:user_name].to_s + " has just refered a new candidate for the following vacancy: https://referbot.recruitee.com/o/#{redis.hmget(input[1], "vacancy")[0].to_s}", params[:channel_id], params[:user_name]
 
     status 200
