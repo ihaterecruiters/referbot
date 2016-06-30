@@ -8,7 +8,6 @@ post '/refbot' do
 
   redis = Redis.new
 
-  redis.flushdb
   input = params[:text].to_s.split(' ')
 
   case input[0].downcase
