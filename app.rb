@@ -14,7 +14,7 @@ post '/refbot' do
     postback "Hello " + params[:user_name] + " welcome to referbot! Type /refbot help. for a list of all refbot keywords.", params[:channel_id], params[:user_name]
     break
   when 'help'
-    postback "This is a list off all the commands: /refbot hello, /refbot help, /refbot list, /refbot new, /refbot new first-name last-name email phone", params[:channel_id], params[:user_name]
+    postback "This is a list off all the commands: /refbot hello, /refbot help, /refbot list, /refbot new, /refbot new first-name last-name email phone vacancy", params[:channel_id], params[:user_name]
     break
   when 'list'
     getlist
