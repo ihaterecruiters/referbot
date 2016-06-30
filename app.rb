@@ -132,7 +132,7 @@ end
 
 
 def getlist
-  receivelist = HTTParty.get('https://api.recruitee.com/c/levelupventures/careers/offers').to_json
+  receivelist = HTTParty.get('https://api.recruitee.com/c/referbot/careers/offers').to_json
 
   test1 = JSON.parse(receivelist, symbolize_names: true)
   contents = test1[:offers]
@@ -142,6 +142,17 @@ def getlist
    postback message, params[:channel_id], params[:user_name]
   end
 end
+# def getlist
+#   receivelist = HTTParty.get('https://api.recruitee.com/c/levelupventures/careers/offers').to_json
+#
+#   test1 = JSON.parse(receivelist, symbolize_names: true)
+#   contents = test1[:offers]
+#
+#   contents.each do |content|
+#     message = "#{content[:id]}, #{content[:title]}  \n   visit it at: #{content[:careers_url]}"
+#    postback message, params[:channel_id], params[:user_name]
+#   end
+# end
 
 
 # def write_json
