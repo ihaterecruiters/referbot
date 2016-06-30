@@ -4,8 +4,8 @@ require 'json'
 require 'redis'
 
 post '/refbot' do
+  $redis = Redis.new
 
-  redis = Redis.new
 
   input = params[:text].to_s.split(' ')
   message = ""
@@ -17,6 +17,8 @@ post '/refbot' do
     message = "This is a list off all the commands: /refbot hello, /refbot help, /refbot list, /refbot new, /refbot new candidate first-name last-name email phone vacancy"
   when 'list'
     message = getlist
+
+
   # when 'new'
   #   redis.hmset(input[1], "firstname", input[2], "lastname", input[3], "email", input[4], "phone", input[5], "vacancy", input[6])
   #   # postback redis.hmget(input[1], "firstname", "lastname", "email", "phone", "vacancy").to_s, params[:channel_id], params[:user_name]
@@ -68,7 +70,14 @@ def checklist
 
   test1 = JSON.parse(check_list, symbolize_names: true)
   contents = test1[:offers]
-  message = contents.size.to_s
-  contents.size
+  message = ""
+
+
+  if $redis.get('lists') != contents.size.to_s
+    message = 'vacancy list has been updated'
+    $redis.set('lists', contents.size.to_s)
+  end
+
+  #message = $redis.get("listsize")
   return message
 end
