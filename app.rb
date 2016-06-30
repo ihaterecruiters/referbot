@@ -6,13 +6,12 @@ require 'redis'
 post '/refbot' do
 
   redis = Redis.new
-  
 
   input = params[:text].to_s.split(' ')
 
   case input[0].downcase
   when 'hello'
-    currentpost
+    # currentpost
     postback "Hello " + params[:user_name] + " welcome to referbot! Type /refbot help. for a list of all refbot keywords.", params[:channel_id], params[:user_name]
     break
   when 'help'
