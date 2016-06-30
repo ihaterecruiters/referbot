@@ -11,13 +11,7 @@ post '/refbot' do
 
   case input[0].downcase
   when 'hello'
-    # postback "Hello " + params[:user_name] + " welcome to referbot! Type /refbot help. for a list of all refbot keywords.", params[:channel_id], params[:user_name]
-    if !redis.exists(params[:user_id])
-      redis.hmset(params[:user_id], "firstname", input[2], "lastname", input[3], "email", input[4], "phone", input[5], "vacancy", input[6])
-      postback params[:user_id] + " does not exist in the database. Creating...", params[:channel_id], params[:user_name]
-    elsif redis.exists(params[:user_id])
-      postback params[:user_id] + " exists in the database. Adding candidate name (step 1/6)", params[:channel_id], params[:user_name]
-    end
+    postback "Hello " + params[:user_name] + " welcome to referbot! Type /refbot help. for a list of all refbot keywords.", params[:channel_id], params[:user_name]
     break
   when 'help'
     postback "This is a list off all the commands: /refbot hello, /refbot help, /refbot list, /refbot new, /refbot new candidate first-name last-name email phone vacancy", params[:channel_id], params[:user_name]
@@ -27,7 +21,16 @@ post '/refbot' do
     break
   end
 
+  if input[0].downcase == "new"
+    if !redis.exists(params[:user_id])
+      # redis.hmset(params[:user_id], "firstname", input[2], "lastname", input[3], "email", input[4], "phone", input[5], "vacancy", input[6])
 
+      redis.hmset(params[:user_id], "candidate_0", ["firstname", "", "lastname", "", "email", "", "phone", "", "vacancy", ""], "step", "1")
+      postback params[:user_id] + " does not exist in the database. Creating...", params[:channel_id], params[:user_name]
+    elsif redis.exists(params[:user_id]) && redis.hmget(params[:user_id], "step")[0].to_s == "1"
+      postback params[:user_id] + " exists in the database. Adding candidate (step 1/6). Name: ", params[:channel_id], params[:user_name]
+    end
+  end
 
   # if input[0].downcase == "new"
   #   redis.hmset(input[1], "firstname", input[2], "lastname", input[3], "email", input[4], "phone", input[5], "vacancy", input[6])
