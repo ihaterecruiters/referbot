@@ -38,13 +38,13 @@ post '/refbot' do
   end
 
   if input[0].downcase == "name" and redis.hmget(params[:user_id], "step")[0].to_s == "1"
-  # if input[0].downcase == "name" and redis.hmget(params[:user_id], "step")[0].to_s == "1"
-    # redis.hmset(params[:user_id], "candidate_0"["firstname"] = input[1])
-    # redis.hmset(params[:user_id], "candidate_0"["lastname"] = input[2])
-    # redis.hmset(params[:user_id], "step", "2")
+    redis.mapped_hmset(params[:user_id], "candidate_0"[:firstname] = input[1])
+    # redis.mapped_hmset(params[:user_id], "candidate_0"["lastname"] = input[2])
+    # redis.mapped_hmset(params[:user_id], "step", "2")
     # firstname = redis.hmget(params[:user_id], "candidate_0"["firstname"])
+    firstnamedb = redis.hmget(params[:user_id], "candidate_0"[:firstname].to_s)
 
-    postback "Name block", params[:channel_id], params[:user_name]
+    postback "Name: " + firstnamedb, params[:channel_id], params[:user_name]
   end
 
   # if input[0].downcase == "new"
