@@ -27,9 +27,9 @@ candidate_content = redis.hmget(params[:user_id], "candidate_0")
   if input[0].downcase == "new"
     if !redis.exists(params[:user_id])
       redis.mapped_hmset(params[:user_id], {"candidate_0": {firstname: "", lastname: "", email: "", phone: "", vacancy: ""}, "step": "1"})
-      postback params[:user_id] + " does not exist in the database. Created. Type '/refbot name: <candidate name>' to start adding a new candidate.", params[:channel_id], params[:user_name]
+      postback params[:user_id] + " profile does not exist in the database. Created. Type '/refbot name: <candidate name>' to start adding a new candidate.", params[:channel_id], params[:user_name]
     elsif redis.exists(params[:user_id])
-      postback params[:user_id] + " exists in the database. Type '/refbot name: <candidate name>' to start adding a new candidate.", params[:channel_id], params[:user_name]
+      postback params[:user_id] + " profile exists in the database. Type '/refbot name: <candidate name>' to start adding a new candidate.", params[:channel_id], params[:user_name]
     # elsif redis.hmget(params[:user_id], "step")[0].to_s == "1"
     #   redis.hmset(params[:user_id], "step", "2")
     #   postback params[:user_id] + " exists in the database. Adding candidate (step 1/6). Name: ", params[:channel_id], params[:user_name]
@@ -45,10 +45,14 @@ candidate_content = redis.hmget(params[:user_id], "candidate_0")
 
   # if input[0].downcase == "name" and redis.hmget(params[:user_id], "step")[0].to_s == "1"
   if input[0].downcase == "name" and eval(candidate_content[0])[:firstname].to_s == ""
-    redis.mapped_hmset(params[:user_id], {"candidate_0": {firstname: input[1], lastname: "", email: "", phone: "", vacancy: ""}, "step": "1"})
+    redis.mapped_hmset(params[:user_id], {"candidate_0": {firstname: input[1], lastname: "", email: "", phone: "", vacancy: ""}, "step": "2"})
 
     firstnameget = redis.hmget(params[:user_id], "candidate_0")
-    postback "Name: " + eval(firstnameget[0])[:firstname].to_s, params[:channel_id], params[:user_name]
+    postback "Added name: " + eval(firstnameget[0])[:firstname].to_s, params[:channel_id], params[:user_name]
+  elsif input[0].downcase == "name" and eval(candidate_content[0])[:firstname].to_s != ""
+    redis.mapped_hmset(params[:user_id], {"candidate_0": {firstname: input[1], lastname: "", email: "", phone: "", vacancy: ""}, "step": "2"})
+    firstnameget = redis.hmget(params[:user_id], "candidate_0")
+    postback "Changed name: " + eval(firstnameget[0])[:firstname].to_s, params[:channel_id], params[:user_name]
   end
 
   # if input[0].downcase == "new"
