@@ -6,11 +6,13 @@ require 'redis'
 post '/refbot' do
 
   redis = Redis.new
+  
 
   input = params[:text].to_s.split(' ')
 
   case input[0].downcase
   when 'hello'
+    currentpost
     postback "Hello " + params[:user_name] + " welcome to referbot! Type /refbot help. for a list of all refbot keywords.", params[:channel_id], params[:user_name]
     break
   when 'help'
@@ -56,6 +58,21 @@ def getlist
     postback "The following vacancies are open:\n" + message, params[:channel_id], params[:user_name]
   end
 end
+
+def currentpost
+  test1 = JSON.parse(receivelist, symbolize_names: true)
+  contents = test1[:offers]
+
+  current_post = []
+
+  contents.each do |content|
+    current_post << content[:id]
+
+  end
+  postback current_post.to_s, params[:channel_id], params[:user_name]
+  redis.set post current_post.count
+end
+
 
 
 # def write_json
