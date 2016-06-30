@@ -12,6 +12,7 @@ post '/refbot' do
   case input[0].downcase
   when 'hello'
     message = "Hello " + params[:user_name] + " welcome to referbot! Type /refbot help. for a list of all refbot keywords."
+    message = checklist
   when 'help'
     message = "This is a list off all the commands: /refbot hello, /refbot help, /refbot list, /refbot new, /refbot new candidate first-name last-name email phone vacancy"
   when 'list'
@@ -60,4 +61,14 @@ def getlist
     message = message + "#{content[:id]}, #{content[:title]} \n #{content[:careers_url]} \n"
   end
   return message;
+end
+
+def checklist
+  check_list = HTTParty.get('https://api.recruitee.com/c/referbot/careers/offers').to_json
+
+  test1 = JSON.parse(check_list, symbolize_names: true)
+  contents = test1[:offers]
+  message = contents.size.to_s
+  contents.size
+  return message
 end
