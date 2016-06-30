@@ -22,7 +22,7 @@ post '/refbot' do
   end
 
   if input[0].downcase == "new"
-    redis.hmset(input[1], "firstname", input[2], "lastname", input[3], "email", input[4], input[5], "phone", input[6], "vacancy")
+    redis.hmset(input[1], "firstname", input[2], "lastname", input[3], "email", input[4], "phone", input[5], "vacancy", input[6])
     postback redis.hmget(input[1], "firstname", "lastname", "email", "phone", "vacancy").to_s, params[:channel_id], params[:user_name]
 
     url = 'https://api.recruitee.com/c/referbot/careers/offers/#{redis.hmget(input[1], "vacancy")[0]}/candidates.json'
