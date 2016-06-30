@@ -5,10 +5,10 @@ require 'redis'
 
 post '/refbot' do
 
-  redis.flushdb
 
   redis = Redis.new
 
+  redis.flushdb
   input = params[:text].to_s.split(' ')
 
   case input[0].downcase
