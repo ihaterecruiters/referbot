@@ -14,7 +14,7 @@ post '/refbot' do
     postback "Hello " + params[:user_name] + " welcome to referbot! Type /refbot help. for a list of all refbot keywords.", params[:channel_id], params[:user_name]
     break
   when 'help'
-    postback "This is a list off all the commands: /refbot hello, /refbot help, /refbot list, /refbot new, /refbot new first-name last-name email phone", params[:channel_id], params[:user_name]
+    postback "This is a list off all the commands: /refbot hello, /refbot help, /refbot list, /refbot new, /refbot new candidate first-name last-name email phone vacancy", params[:channel_id], params[:user_name]
     break
   when 'list'
     getlist
@@ -23,7 +23,7 @@ post '/refbot' do
 
   if input[0].downcase == "new"
     redis.hmset(input[1], "firstname", input[2], "lastname", input[3], "email", input[4], "phone", input[5], "vacancy", input[6])
-    postback redis.hmget(input[1], "firstname", "lastname", "email", "phone", "vacancy").to_s, params[:channel_id], params[:user_name]
+    # postback redis.hmget(input[1], "firstname", "lastname", "email", "phone", "vacancy").to_s, params[:channel_id], params[:user_name]
 
     url = "https://api.recruitee.com/c/referbot/careers/offers/#{redis.hmget(input[1], "vacancy")[0].to_s}/candidates.json"
     candidate = {
@@ -36,6 +36,8 @@ post '/refbot' do
     HTTParty.post(url,
       body: { candidate: candidate }.to_json,
       headers: { "content-type" => "application/json" })
+
+      postback params[:user_name].to_s + " has just refered a new candidate for the following vacancy: https://referbot.recruitee.com/o/#{redis.hmget(input[1], "vacancy")[0].to_s}", params[:channel_id], params[:user_name]
 
     status 200
   end
@@ -50,8 +52,8 @@ def getlist
   contents = test1[:offers]
 
   contents.each do |content|
-    message = "#{content[:id]}, #{content[:title]}  \n   visit it at: #{content[:careers_url]}"
-   postback message, params[:channel_id], params[:user_name]
+    message = "#{content[:id]}, #{content[:title]} \n #{content[:careers_url]}"
+    postback "The following vacancies are open:\n" + message, params[:channel_id], params[:user_name]
   end
 end
 
