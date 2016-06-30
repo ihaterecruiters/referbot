@@ -23,8 +23,7 @@ post '/refbot' do
 
   if input[0].downcase == "new"
     redis.hmset(input[1], "name", input[2], "email", input[3], "phone", input[4])
-    postback redis.hmget(input[1], "email")[0].to_s, params[:channel_id], params[:user_name]
-    # postback redis.hmget(input[1], "name", "email", "phone").to_s, params[:channel_id], params[:user_name]
+    postback redis.hmget(input[1], "name", "email", "phone").to_s, params[:channel_id], params[:user_name]
     status 200
     post_candidate
   end
@@ -33,7 +32,7 @@ end
 def post_candidate
   url = "https://api.recruitee.com/c/referbot/careers/offers/designer-voorbeeld-vacature/candidates.json"
   candidate = {
-    name: redis.hmget(input[1], "name")[0].to_s,
+    name: redis.hmget(input[1], "John Doe")[0].to_s,
     email: redis.hmget(input[1], "email")[0].to_s,
     phone: redis.hmget(input[1], "phone")[0].to_s,
     remote_cv_url: "http://cd.sseu.re/welcome-pdf.pdf"
