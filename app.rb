@@ -53,7 +53,7 @@ def getlist
 
   contents.each do |content|
     message = "#{content[:id]}, #{content[:title]} \n #{content[:careers_url]}"
-    postback "The following vacancies are open:\n" + message, params[:channel_id], params[:user_name]
+    postback message, params[:channel_id], params[:user_name]
   end
 end
 
