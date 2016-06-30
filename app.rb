@@ -32,9 +32,9 @@ end
 def post_candidate
   url = "https://api.recruitee.com/c/referbot/careers/offers/designer-voorbeeld-vacature/candidates.json"
   candidate = {
-    name: redis.hmget(input[1], "name").to_s,
-    email: redis.hmget(input[1], "email").to_s,
-    phone: redis.hmget(input[1], "phone").to_s,
+    name: redis.hmget(input[1], "name")[0].to_s,
+    email: redis.hmget(input[1], "email")[0].to_s,
+    phone: redis.hmget(input[1], "phone")[0].to_s,
     remote_cv_url: "http://cd.sseu.re/welcome-pdf.pdf"
   }
 
