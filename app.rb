@@ -22,12 +22,12 @@ post '/refbot' do
   end
 
   if input[0].downcase == "new"
-    redis.hmset(input[1], "name", input[2], "email", input[3], "phone", input[4])
-    postback redis.hmget(input[1], "name", "email", "phone").to_s, params[:channel_id], params[:user_name]
+    redis.hmset(input[1], "firstname", input[2], "lastname", input[3], "email", input[4], input[5], "phone")
+    postback redis.hmget(input[1], "firstname", "lastname", "email", "phone").to_s, params[:channel_id], params[:user_name]
 
     url = "https://api.recruitee.com/c/referbot/careers/offers/designer-voorbeeld-vacature/candidates.json"
     candidate = {
-      name: redis.hmget(input[1], "name")[0].to_s,
+      name: redis.hmget(input[1], "firstname")[0].to_s + " " + redis.hmget(input[1], "lastname")[0].to_s,
       email: redis.hmget(input[1], "email")[0].to_s,
       phone: redis.hmget(input[1], "phone")[0].to_s,
       remote_cv_url: "http://cd.sseu.re/welcome-pdf.pdf"
@@ -40,6 +40,26 @@ post '/refbot' do
     status 200
   end
 end
+
+#   if input[0].downcase == "new"
+#     redis.hmset(input[1], "name", input[2], "email", input[3], "phone", input[4])
+#     postback redis.hmget(input[1], "name", "email", "phone").to_s, params[:channel_id], params[:user_name]
+#
+#     url = "https://api.recruitee.com/c/referbot/careers/offers/designer-voorbeeld-vacature/candidates.json"
+#     candidate = {
+#       name: redis.hmget(input[1], "name")[0].to_s,
+#       email: redis.hmget(input[1], "email")[0].to_s,
+#       phone: redis.hmget(input[1], "phone")[0].to_s,
+#       remote_cv_url: "http://cd.sseu.re/welcome-pdf.pdf"
+#     }
+#
+#     HTTParty.post(url,
+#       body: { candidate: candidate }.to_json,
+#       headers: { "content-type" => "application/json" })
+#
+#     status 200
+#   end
+# end
 
 # def post_candidate
 #   url = "https://api.recruitee.com/c/referbot/careers/offers/designer-voorbeeld-vacature/candidates.json"
