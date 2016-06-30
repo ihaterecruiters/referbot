@@ -22,6 +22,8 @@ post '/refbot' do
     break
   end
 
+candidate_content = redis.hmget(params[:user_id], "candidate_0")
+
   if input[0].downcase == "new"
     if !redis.exists(params[:user_id])
       redis.mapped_hmset(params[:user_id], {"candidate_0": {firstname: "", lastname: "", email: "", phone: "", vacancy: ""}, "step": "1"})
@@ -37,7 +39,12 @@ post '/refbot' do
     end
   end
 
-  if input[0].downcase == "name" and redis.hmget(params[:user_id], "step")[0].to_s == "1"
+  if input[0].downcase == "reset"
+    redis.mapped_hmset(params[:user_id], {"candidate_0": {firstname: "", lastname: "", email: "", phone: "", vacancy: ""}, "step": "1"})
+  end
+
+  # if input[0].downcase == "name" and redis.hmget(params[:user_id], "step")[0].to_s == "1"
+  if input[0].downcase == "name" and eval(candidate_content[0])[:firstname].to_s == ""
     redis.mapped_hmset(params[:user_id], {"candidate_0": {firstname: input[1], lastname: "", email: "", phone: "", vacancy: ""}, "step": "1"})
 
     firstnameget = redis.hmget(params[:user_id], "candidate_0")
