@@ -21,7 +21,7 @@ post '/refbot' do
     break
   end
 
-  if redis.exists(params[:user_id])
+  if not redis.exists(params[:user_id])
     postback params[:user_id] + " exists in the database.", params[:channel_id], params[:user_name]
   end
 
