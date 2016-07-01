@@ -77,8 +77,7 @@ post '/refbot' do
     end
   end
 
-  json_message = {"text" => message, "username" => "refbot", "channel" => "directmessage"}
-  # json_message = {"text" => message, "username" => "refbot", "channel" => params[:channel_id]}
+  json_message = {"text" => message, "username" => "refbot", "channel" => params[:channel_id]}
   if ENV['DEV_ENV'] == 'test'
     content_type :json
    json_message[:text] = "#{message} + #{notification}"
