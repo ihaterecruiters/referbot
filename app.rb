@@ -45,6 +45,14 @@ post '/refbot' do
     else
       message = "First add a name using '/refbot name <candidate name>'"
     end
+
+  when "phone"
+    if eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s != ""
+      $redis.mapped_hmset(params[:user_id], {"candidate": {name: eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s, email: eval($redis.hmget(params[:user_id], "candidate")[0])[:email].to_s, phone: input[1..-1].join(" "), vacancy: ""}, "step": "3"})
+      message = "New phone number for " + eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s + ": " + eval($redis.hmget(params[:user_id], "candidate")[0])[:phone].to_s + ". \n Type '/refbot CV <candidate CV URL>' to add a CV URL. Step 4/5."
+    else
+      message = "First add a name using '/refbot name <candidate name>'"
+    end
   end
 
   json_message = {"text" => message, params[:user_name] => "refbot", "channel" => params[:channel_id]}
