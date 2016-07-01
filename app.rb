@@ -62,39 +62,20 @@ post '/refbot' do
       message = "First add a name using '/refbot name <candidate name>'"
     end
   end
-
-  # when "send"
-  #   redis.hmset(input[1], "firstname", input[2], "lastname", input[3], "email", input[4], "phone", input[5], "vacancy", input[6])
-  #   # postback redis.hmget(input[1], "firstname", "lastname", "email", "phone", "vacancy").to_s, params[:channel_id], params[:user_name]
-  #
-  #   url = "https://api.recruitee.com/c/referbot/careers/offers/#{redis.hmget(input[1], "vacancy")[0].to_s}/candidates.json"
-  #   candidate = {
-  #     name: redis.hmget(input[1], "firstname")[0].to_s + " " + redis.hmget(input[1], "lastname")[0].to_s,
-  #     email: redis.hmget(input[1], "email")[0].to_s,
-  #     phone: redis.hmget(input[1], "phone")[0].to_s,
-  #     remote_cv_url: "http://cd.sseu.re/welcome-pdf.pdf"
-  #   }
-  #
-  #   HTTParty.post(url,
-  #     body: { candidate: candidate }.to_json,
-  #     headers: { "content-type" => "application/json" })
-  #
-  #     message = params[:user_name].to_s + " has just refered a new candidate for the following vacancy: https://referbot.recruitee.com/o/#{redis.hmget(input[1], "vacancy")[0].to_s}", params[:channel_id], params[:user_name]
-  # end
 end
 
-  json_message = {"text" => message, params[:user_name] => "refbot", "channel" => params[:channel_id]}
-  if ENV['DEV_ENV'] == 'test'
-    content_type :json
-   json_message[:text] = "#{message} + #{notification}"
-   json_message.to_json
-  else
-    slack_webhook = ENV['SLACK_WEBHOOK_URL']
-    notif_message = {"text" => notification, params[:user_name] => "refbot", "channel" => params[:channel_id]}
-    HTTParty.post slack_webhook, body: json_message.to_json, headers: {'content-type' => 'application/json'}
-    HTTParty.post slack_webhook, body: notif_message.to_json, headers: {'content-type' => 'application/json'}
-    status 200
-  end
+json_message = {"text" => message, params[:user_name] => "refbot", "channel" => params[:channel_id]}
+if ENV['DEV_ENV'] == 'test'
+  content_type :json
+ json_message[:text] = "#{message} + #{notification}"
+ json_message.to_json
+else
+  slack_webhook = ENV['SLACK_WEBHOOK_URL']
+  notif_message = {"text" => notification, params[:user_name] => "refbot", "channel" => params[:channel_id]}
+  HTTParty.post slack_webhook, body: json_message.to_json, headers: {'content-type' => 'application/json'}
+  HTTParty.post slack_webhook, body: notif_message.to_json, headers: {'content-type' => 'application/json'}
+  status 200
+end
 
 def getlist
   receivelist = HTTParty.get('https://api.recruitee.com/c/referbot/careers/offers').to_json
@@ -105,7 +86,7 @@ def getlist
   contents.each do |content|
     message = message + "#{content[:id]}, #{content[:title]} \n #{content[:careers_url]} \n"
   end
-  return message;
+  return message
 end
 
 def checklist
