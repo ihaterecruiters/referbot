@@ -57,7 +57,7 @@ post '/refbot' do
   when "send"
     if eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s != ""
       $redis.mapped_hmset(params[:user_id], {"candidate": {name: eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s, email: eval($redis.hmget(params[:user_id], "candidate")[0])[:email].to_s, phone: eval($redis.hmget(params[:user_id], "candidate")[0])[:phone].to_s, vacancy: input[1..-1].join(" ")}, "step": "5/5"})
-      message = "New vacancies for " + eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s + ": " + eval($redis.hmget(params[:user_id], "candidate")[0])[:vacancy].to_s + ". \n Type '/refbot CV <candidate CV URL>' to add a CV URL. Step 5/5."
+      message = "New vacancies for " + eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s + ": " + eval($redis.hmget(params[:user_id], "candidate")[0])[:vacancy].to_s + ". \n Type '/refbot send <vacancy number>' to add a vacancy to the candidate. Step 5/5."
 
       url = "https://api.recruitee.com/c/referbot/careers/offers/" + eval($redis.hmget(params[:user_id], "candidate")[0])[:vacancy].to_s + "/candidates.json"
     create_candidate = {
@@ -71,7 +71,7 @@ post '/refbot' do
         body: { candidate: create_candidate }.to_json,
         headers: { "content-type" => "application/json" })
 
-        message = params[:user_name].to_s + " has just refered a new candidate for the following vacancy: https://referbot.recruitee.com/o/#{redis.hmget(input[1], "vacancy")[0].to_s}"
+        message = params[:user_name] + " has just refered a new candidate for the following vacancy: https://referbot.recruitee.com/o/" + eval($redis.hmget(params[:user_id], "candidate")[0])[:vacancy].to_s
       status 200
     else
       message = "First add a name using '/refbot name <candidate name>'"
