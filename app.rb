@@ -57,7 +57,7 @@ post '/refbot' do
   when "send"
     if eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s != ""
       $redis.mapped_hmset(params[:user_id], {"candidate": {name: eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s, email: eval($redis.hmget(params[:user_id], "candidate")[0])[:email].to_s, phone: eval($redis.hmget(params[:user_id], "candidate")[0])[:phone].to_s, vacancy: input[1..-1].join(" ")}, "step": "5/5"})
-      message = "New vacancies for " + eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s + ": " + eval($redis.hmget(params[:user_id], "candidate")[0])[:vacancy].to_s + "."
+      # message = "New vacancies for " + eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s + ": " + eval($redis.hmget(params[:user_id], "candidate")[0])[:vacancy].to_s + "."
 
       url = "https://api.recruitee.com/c/referbot/careers/offers/" + eval($redis.hmget(params[:user_id], "candidate")[0])[:vacancy].to_s + "/candidates.json"
     create_candidate = {
