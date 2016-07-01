@@ -44,7 +44,7 @@ candidate_content = redis.hmget(params[:user_id], "candidate_0")
   elsif input[0].downcase == "name" and eval(candidate_content[0])[:name].to_s != ""
     redis.mapped_hmset(params[:user_id], {"candidate_0": {name: input[1], email: "", phone: "", vacancy: ""}, "step": "2"})
     nameget = redis.hmget(params[:user_id], "candidate_0")
-    postback "Changed name to: " + eval(nameget[0])[:name].to_s + ". Type '/refbot email <candidate email>' to add an email address. Step 2/5.", params[:channel_id], params[:user_name]
+    postback "Changed name to: " + eval(nameget[1])[:name].to_s + ". Type '/refbot email <candidate email>' to add an email address. Step 2/5.", params[:channel_id], params[:user_name]
   end
 end
 
