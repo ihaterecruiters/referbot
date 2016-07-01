@@ -34,6 +34,7 @@ post '/refbot' do
 
   if input[0].downcase == "reset"
     redis.mapped_hmset(params[:user_id], {"candidate": {name: "", email: "", phone: "", vacancy: ""}, "step": "1"})
+    postback "Candidate creation reset.", params[:channel_id], params[:user_name]
   end
 
   if input[0].downcase == "name"
