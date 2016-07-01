@@ -40,21 +40,21 @@ candidate_content = redis.hmget(params[:user_id], "candidate")
   if input[0].downcase == "name" and eval(candidate_content[0])[:name].to_s == ""
     redis.mapped_hmset(params[:user_id], {"candidate": {name: input[1..-1].join(" "), email: "", phone: "", vacancy: ""}, "step": "2"})
     nameget = redis.hmget(params[:user_id], "candidate")
-    postback "Added name: " + eval(nameget[0])[:name].to_s + ". Type '/refbot email <candidate email>' to add an email address. Step 2/5.", params[:channel_id], params[:user_name]
+    postback "New name: " + eval(nameget[0])[:name].to_s + ". Type '/refbot email <candidate email>' to add an email address. Step 2/5.", params[:channel_id], params[:user_name]
   elsif input[0].downcase == "name" and eval(candidate_content[0])[:name].to_s != ""
     redis.mapped_hmset(params[:user_id], {"candidate": {name: input[1..-1].join(" "), email: "", phone: "", vacancy: ""}, "step": "2"})
     nameget = redis.hmget(params[:user_id], "candidate")
-    postback "Changed name to: " + eval(nameget[0])[:name].to_s + ". Type '/refbot email <candidate email>' to add an email address. Step 2/5.", params[:channel_id], params[:user_name]
+    postback "New name: " + eval(nameget[0])[:name].to_s + ". Type '/refbot email <candidate email>' to add an email address. Step 2/5.", params[:channel_id], params[:user_name]
   end
 
   if input[0].downcase == "email" and eval(candidate_content[0])[:email].to_s == ""
     redis.mapped_hmset(params[:user_id], {"candidate": {name: "", email: input[1..-1].join(" "), phone: "", vacancy: ""}, "step": "2"})
     emailget = redis.hmget(params[:user_id], "candidate")
-    postback "Added email: " + eval(emailget[0])[:email].to_s + ". Type '/refbot email <candidate email>' to add an email address. Step 2/5.", params[:channel_id], params[:user_name]
+    postback "New email: " + eval(emailget[0])[:email].to_s + ". Type '/refbot email <candidate email>' to add an email address. Step 2/5.", params[:channel_id], params[:user_name]
   elsif input[0].downcase == "email" and eval(candidate_content[0])[:email].to_s != ""
-    redis.mapped_hmset(params[:user_id], {"candidate": {name: input[1], email: "", phone: "", vacancy: ""}, "step": "2"})
-    nameget = redis.hmget(params[:user_id], "candidate")
-    postback "Changed name to: " + eval(nameget[0])[:name].to_s + ". Type '/refbot email <candidate email>' to add an email address. Step 2/5.", params[:channel_id], params[:user_name]
+    redis.mapped_hmset(params[:user_id], {"candidate": {name: "", email: input[1..-1].join(" "), phone: "", vacancy: ""}, "step": "2"})
+    emailget = redis.hmget(params[:user_id], "candidate")
+    postback "New email: " + eval(emailget[0])[:email].to_s + ". Type '/refbot email <candidate email>' to add an email address. Step 2/5.", params[:channel_id], params[:user_name]
   end
 end
 
