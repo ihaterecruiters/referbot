@@ -4,6 +4,10 @@ require 'json'
 require 'redis'
 
 post '/refbot' do
+  # Logging
+  puts "Processing request with params:"
+  puts params.inspect
+
   $redis = Redis.new
   input = params[:text].to_s.split(' ')
   message = ""
