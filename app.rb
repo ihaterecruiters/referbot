@@ -55,7 +55,7 @@ post '/refbot' do
   else
     slack_webhook = ENV['SLACK_WEBHOOK_URL']
     notif_message = {"text" => notification, params[:user_name] => "refbot", "channel" => params[:channel_id]}
-    HTTParty.post slack_webhook, body: json_message, headers: {'content-type' => 'application/json'}
+    HTTParty.post slack_webhook, body: json_message.to_json, headers: {'content-type' => 'application/json'}
     HTTParty.post slack_webhook, body: notif_message.to_json, headers: {'content-type' => 'application/json'}
   end
 end
