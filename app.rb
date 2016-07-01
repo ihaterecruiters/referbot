@@ -42,7 +42,38 @@ post '/refbot' do
       message = "First add a name using '/refbot name <candidate name>'"
     end
 
-  end
+
+  when "send"
+    if input.size >= 1 and eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s != ""
+      for input.each do |vacancynumber|
+        next if input.count = 0
+        postcandidate = $redis.mapped_hmset(params[:user_id], {"candidate": {name: eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s, email:  eval($redis.hmget(params[:user_id], "candidate")[0])[:email].to_s, phone: eval($redis.hmget(params[:user_id],
+          "candidate")[0])[:phone].to_s, "step": "3"}, vacancy: input[vacancynumber]})
+          HTTParty.post('', postcandidate).to_json
+
+          offerid = input[vacancynumber]
+
+          url = "https://api.recruitee.com/c/referbot/careers/offers/#{offerid}/candidates.json"
+          candidate = {
+            name: eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s,
+            email: eval($redis.hmget(params[:user_id], "candidate")[0])[:email].to_s
+            phone: eval($redis.hmget(params[:user_id], "candidate")[0])[:phone].to_s
+            # remote_cv_url: "http://cd.sseu.re/welcome-pdf.pdf"
+          }
+
+          HTTParty.post(url,
+            body: { candidate: candidate }.to_json,
+            headers: { "Content-Type" => "application/json" })
+
+
+
+
+      end
+    else message = "Please choose a vacancy to send your candidate to.\n"
+      getlist
+
+      end
+    end
 
   json_message = {"text" => message, params[:user_name] => "refbot", "channel" => params[:channel_id]}
   if ENV['DEV_ENV'] == 'test'
