@@ -5,7 +5,7 @@ require 'redis'
 
 post '/refbot' do
   # Logging
-  puts "Processing request with params:"
+  puts "Processing request with params: "
   puts params.inspect
 
   $redis = Redis.new
@@ -13,10 +13,10 @@ post '/refbot' do
   message = ""
   case input[0].downcase
   when 'hello'
-    message = "Hello " + params[:user_name] + " welcome to referbot! Type /refbot help. for a list of all refbot keywords."
+    message = "Hi " + params[:user_name] + "! Type /refbot help for a list of all refbot commands."
     notification = checklist
   when 'help'
-    message = "This is a list off all the commands: /refbot hello, /refbot help, /refbot list, /refbot new, /refbot new candidate first-name last-name email phone vacancy"
+    message = "These are the available commands: /refbot hello, /refbot help, /refbot list, /refbot new, /refbot name, /refbot reset."
     notification = checklist
   when 'list'
     message = getlist
@@ -46,19 +46,48 @@ post '/refbot' do
       message = "First add a name using '/refbot name <candidate name>'"
     end
 
+  when "phone"
+    if eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s != ""
+      $redis.mapped_hmset(params[:user_id], {"candidate": {name: eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s, email: eval($redis.hmget(params[:user_id], "candidate")[0])[:email].to_s, phone: input[1..-1].join(" "), vacancy: ""}, "step": "3"})
+      message = "New phone number for " + eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s + ": " + eval($redis.hmget(params[:user_id], "candidate")[0])[:phone].to_s + ". \n Type '/refbot send <vacancy number>' to add a vacancy to the candidate. Step 4/5."
+    else
+      message = "First add a name using '/refbot name <candidate name>'"
+    end
+
+  when "send"
+    if eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s != ""
+      $redis.mapped_hmset(params[:user_id], {"candidate": {name: eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s, email: eval($redis.hmget(params[:user_id], "candidate")[0])[:email].to_s, phone: eval($redis.hmget(params[:user_id], "candidate")[0])[:phone].to_s, vacancy: input[1..-1].join(" ")}, "step": "5/5"})
+
+      url = "https://api.recruitee.com/c/referbot/careers/offers/" + eval($redis.hmget(params[:user_id], "candidate")[0])[:vacancy].to_s + "/candidates.json"
+    create_candidate = {
+      name: eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s,
+      email: eval($redis.hmget(params[:user_id], "candidate")[0])[:email].to_s,
+      phone: eval($redis.hmget(params[:user_id], "candidate")[0])[:phone].to_s,
+      remote_cv_url: "http://cd.sseu.re/welcome-pdf.pdf"
+      }
+
+      HTTParty.post(url,
+        body: { candidate: create_candidate }.to_json,
+        headers: { "content-type" => "application/json" })
+
+        message = params[:user_name] + " has just refered a new candidate for the following vacancy: https://referbot.recruitee.com/o/" + eval($redis.hmget(params[:user_id], "candidate")[0])[:vacancy].to_s
+      status 200
+    else
+      message = "First add a name using '/refbot name <candidate name>'"
+    end
   end
 
-  json_message = {"text" => message, params[:user_name] => "refbot", "channel" => params[:channel_id]}
+  json_message = {"text" => message, "username" => "refbot", "channel" => params[:channel_id]}
   if ENV['DEV_ENV'] == 'test'
     content_type :json
    json_message[:text] = "#{message} + #{notification}"
    json_message.to_json
   else
     slack_webhook = ENV['SLACK_WEBHOOK_URL']
-    notif_message = {"text" => notification, params[:user_name] => "refbot", "channel" => params[:channel_id]}
+    notif_message = {"text" => notification, "username" => "refbot", "channel" => params[:channel_id]}
     HTTParty.post slack_webhook, body: json_message.to_json, headers: {'content-type' => 'application/json'}
     HTTParty.post slack_webhook, body: notif_message.to_json, headers: {'content-type' => 'application/json'}
-
+    status 200
   end
 end
 
@@ -71,7 +100,7 @@ def getlist
   contents.each do |content|
     message = message + "#{content[:id]}, #{content[:title]} \n #{content[:careers_url]} \n"
   end
-  return message;
+  return message
 end
 
 def checklist
