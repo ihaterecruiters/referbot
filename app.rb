@@ -58,19 +58,34 @@ post '/refbot' do
     if eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s != ""
       $redis.mapped_hmset(params[:user_id], {"candidate": {name: eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s, email: eval($redis.hmget(params[:user_id], "candidate")[0])[:email].to_s, phone: eval($redis.hmget(params[:user_id], "candidate")[0])[:phone].to_s, vacancy: input[1..-1].join(" ")}, "step": "5/5"})
       message = "New vacancies for " + eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s + ": " + eval($redis.hmget(params[:user_id], "candidate")[0])[:vacancy].to_s + ". \n Type '/refbot CV <candidate CV URL>' to add a CV URL. Step 5/5."
+
+      url = "https://api.recruitee.com/c/referbot/careers/offers/#{eval($redis.hmget(params[:user_id], "candidate")[0])[:vacancy].to_s}/candidates.json"
+    create_candidate = {
+      name: eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s,
+      email: eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s,
+      phone: eval($redis.hmget(params[:user_id], "candidate")[0])[:email].to_s,
+      remote_cv_url: "http://cd.sseu.re/welcome-pdf.pdf"
+      }
+
+      HTTParty.post(url,
+        body: { candidate: create_candidate }.to_json,
+        headers: { "content-type" => "application/json" })
+
+        message = params[:user_name].to_s + " has just refered a new candidate for the following vacancy: https://referbot.recruitee.com/o/#{redis.hmget(input[1], "vacancy")[0].to_s}"
+      status 200
     else
       message = "First add a name using '/refbot name <candidate name>'"
     end
   end
 
-  json_message = {"text" => message, params[:user_name] => "refbot", "channel" => params[:channel_id]}
+  json_message = {"text" => message, "username" => "refbot", "channel" => params[:channel_id]}
   if ENV['DEV_ENV'] == 'test'
     content_type :json
    json_message[:text] = "#{message} + #{notification}"
    json_message.to_json
   else
     slack_webhook = ENV['SLACK_WEBHOOK_URL']
-    notif_message = {"text" => notification, params[:user_name] => "refbot", "channel" => params[:channel_id]}
+    notif_message = {"text" => notification, "username" => "refbot", "channel" => params[:channel_id]}
     HTTParty.post slack_webhook, body: json_message.to_json, headers: {'content-type' => 'application/json'}
     HTTParty.post slack_webhook, body: notif_message.to_json, headers: {'content-type' => 'application/json'}
     status 200
