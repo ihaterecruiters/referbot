@@ -21,13 +21,16 @@ post '/refbot' do
   when "new"
     if !$redis.exists(params[:user_id])
       $redis.mapped_hmset(params[:user_id], {"candidate": {firstname: "", lastname: "", email: "", phone: "", vacancy: ""}, "step": "1"})
+
       message = params[:user_id] + " profile does not exist in the database. Created. Type '/refbot name <candidate name>' to start adding a new candidate."
-    elsif $redis.exists(params[:user_id])
+
+    else
       message = params[:user_id] + " profile exists in the database. Type '/refbot name <candidate name>' to start adding a new candidate. Step 1/5."
     end
 
   when "reset"
     $redis.mapped_hmset(params[:user_id], {"candidate": {firstname: "", lastname: "", email: "", phone: "", vacancy: ""}, "step": "1"})
+
     message = "Candidate creation reset."
 
   when "name"
