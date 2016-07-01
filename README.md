@@ -2,6 +2,12 @@
 A slack integration to refer people as potential new colleagues. <br>
 (by LevelUp Ventures | http://www.levelupventures.nl | http://www.ihaterecruiters.io) <br>
 
+##DEV NOTES:
+Supply env variable for local run
+You need to have sinatra gem installed.
+DEV_ENV=test ruby app.rb
+
+
 INTRODUCTION TO REFERRALS <br>
 80% of new hires come through Sourcing & Referrals. <br>
 For developers, this % is even higher. <br>
