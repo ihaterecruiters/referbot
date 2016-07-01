@@ -55,7 +55,7 @@ post '/refbot' do
     redis.mapped_hmset(params[:user_id], {"candidate": {name: eval(nameget[0])[:name].to_s, email: input[1..-1].join(" "), phone: "", vacancy: ""}, "step": "3"})
     emailget = redis.hmget(params[:user_id], "candidate")
     postback "New email: " + eval(emailget[0])[:email].to_s + ". Type '/refbot phone <candidate phone>' to add a phone number. Step 3/5.", params[:channel_id], params[:user_name]
-  else
+  elsif input[0].downcase == "email" and eval(redis.hmget(params[:user_id], "candidate")[0])[:name].to_s == ""
     postback "First add a name using '/refbot name <candidate name>'", params[:channel_id], params[:user_name]
   end
 
