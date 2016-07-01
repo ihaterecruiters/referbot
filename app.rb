@@ -25,9 +25,10 @@ post '/refbot' do
   if input[0].downcase == "new"
     if !redis.exists(params[:user_id])
       redis.mapped_hmset(params[:user_id], {"candidate": {name: "", email: "", phone: "", vacancy: ""}, "step": "1"})
-      postback params[:user_id] + " profile does not exist in the database. Created... Type '/refbot name <candidate name>' to start adding a new candidate. Step 1/5.", params[:channel_id], params[:user_name]
+
+      postback params[:user_id] + " profile does not exist in the database. Created... \n Type '/refbot name <candidate name>' to start adding a new candidate. Step 1/5.", params[:channel_id], params[:user_name]
     elsif redis.exists(params[:user_id])
-      postback params[:user_id] + " profile exists in the database. Type '/refbot name <candidate name>' to start adding a new candidate. Step 1/5.", params[:channel_id], params[:user_name]
+      postback params[:user_id] + " profile exists in the database. \n Type '/refbot name <candidate name>' to start adding a new candidate. Step 1/5.", params[:channel_id], params[:user_name]
     end
   end
 
@@ -37,16 +38,18 @@ post '/refbot' do
 
   if input[0].downcase == "name"
     redis.mapped_hmset(params[:user_id], {"candidate": {name: input[1..-1].join(" "), email: "", phone: "", vacancy: ""}, "step": "2"})
-    postback "New name: " + eval(redis.hmget(params[:user_id], "candidate")[0])[:name].to_s + ". Type '/refbot email <candidate email>' to add an email address. Step 2/5.", params[:channel_id], params[:user_name]
+
+    postback "New name: " + eval(redis.hmget(params[:user_id], "candidate")[0])[:name].to_s + ". \n Type '/refbot email <candidate email>' to add an email address. Step 2/5.", params[:channel_id], params[:user_name]
   end
 
   if input[0].downcase == "email" and eval(redis.hmget(params[:user_id], "candidate")[0])[:name].to_s != ""
     redis.mapped_hmset(params[:user_id], {"candidate": {name: eval(redis.hmget(params[:user_id], "candidate")[0])[:name].to_s, email: input[1..-1].join(" "), phone: "", vacancy: ""}, "step": "3"})
+
     postback "New email for " + eval(redis.hmget(params[:user_id], "candidate")[0])[:name].to_s + ": " + eval(redis.hmget(params[:user_id], "candidate")[0])[:email].to_s + ". \n Type '/refbot phone <candidate phone>' to add a phone number. Step 3/5.", params[:channel_id], params[:user_name]
-    # postback "New email: " + eval(redis.hmget(params[:user_id], "candidate")[0])[:email].to_s + ". Type '/refbot phone <candidate phone>' to add a phone number. Step 3/5.", params[:channel_id], params[:user_name]
   elsif input[0].downcase == "email" and eval(redis.hmget(params[:user_id], "candidate")[0])[:name].to_s == ""
     postback "First add a name using '/refbot name <candidate name>'", params[:channel_id], params[:user_name]
   end
+
 end
 
 
@@ -101,16 +104,6 @@ def currentpost
   postback current_post.to_s, params[:channel_id], params[:user_name]
   redis.set post current_post.count
 end
-
-
-# def write_json
-#   jsoncontent = {"text" => "refbot response", "username" => "refbot", "channel" => params[:channel_id]}
-#   newjson = JSON.pretty_generate(jsoncontent)
-#   File.open("userdata.json","w") do |f|
-#     f.write(newjson)
-#   end
-#   newjson
-# end
 
 
 def postback message, channel, user
