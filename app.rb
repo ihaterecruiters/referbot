@@ -35,10 +35,10 @@ post '/refbot' do
     $redis.mapped_hmset(params[:user_id], {"candidate": {name: input[1..-1].join(" "), email: "", phone: "", vacancy: ""}, "step": "2"})
 
     message = "New name: " + eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s + ". \n Type '/refbot email <candidatee email>' yo add an email address. Step 2/5."
-    
+
   when "email"
     if eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s != ""
-        redis.mapped_hmset(params[:user_id], {"candidate": {name: eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s, email: input[1..-1].join(" "), phone: "", vacancy: ""}, "step": "3"})
+        $redis.mapped_hmset(params[:user_id], {"candidate": {name: eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s, email: input[1..-1].join(" "), phone: "", vacancy: ""}, "step": "3"})
     ​
         message = "New email for " + eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s + ": " + eval($redis.hmget(params[:user_id], "candidate")[0])[:email].to_s + ". \n Type '/refbot phone <candidate phone>' to add a phone number. Step 3/5."
       elsif eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s == ""
