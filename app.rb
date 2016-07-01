@@ -16,7 +16,7 @@ post '/refbot' do
     message = "Hello " + params[:user_name] + " welcome to referbot! Type /refbot help. for a list of all refbot keywords."
     notification = checklist
   when 'help'
-    message = "This is a list off all the commands: /refbot hello, /refbot help, /refbot list, /refbot new, /refbot new candidate first-name last-name email phone vacancy"
+    message = "This is a list off all the commands: /refbot hello, /refbot help, /refbot list, /refbot new, /refbot name"
     notification = checklist
   when 'list'
     message = getlist
@@ -77,7 +77,8 @@ post '/refbot' do
     end
   end
 
-  json_message = {"text" => message, "username" => "refbot", "channel" => params[:channel_id]}
+  json_message = {"text" => message, "username" => "refbot", "channel" => "directmessage"}
+  # json_message = {"text" => message, "username" => "refbot", "channel" => params[:channel_id]}
   if ENV['DEV_ENV'] == 'test'
     content_type :json
    json_message[:text] = "#{message} + #{notification}"
