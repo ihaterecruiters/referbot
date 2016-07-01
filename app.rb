@@ -72,7 +72,7 @@ post '/refbot' do
         headers: { "content-type" => "application/json" })
 
         message = params[:user_name] + " has just refered a new candidate for the following vacancy: https://referbot.recruitee.com/o/" + eval($redis.hmget(params[:user_id], "candidate")[0])[:vacancy].to_s
-      status 200
+        status 200
     else
       message = "First add a name using '/refbot name <candidate name>'"
     end
