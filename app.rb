@@ -5,7 +5,7 @@ require 'redis'
 
 post '/refbot' do
   # Logging
-  puts "Processing request with params:"
+  puts "Processing request with params: "
   puts params.inspect
 
   $redis = Redis.new
@@ -13,10 +13,10 @@ post '/refbot' do
   message = ""
   case input[0].downcase
   when 'hello'
-    message = "Hello " + params[:user_name] + " welcome to referbot! Type /refbot help. for a list of all refbot keywords."
+    message = "Hi " + params[:user_name] + "! Type /refbot help for a list of all refbot commands."
     notification = checklist
   when 'help'
-    message = "This is a list off all the commands: /refbot hello, /refbot help, /refbot list, /refbot new, /refbot name"
+    message = "These are the available commands: /refbot hello, /refbot help, /refbot list, /refbot new, /refbot name, /refbot reset."
     notification = checklist
   when 'list'
     message = getlist
