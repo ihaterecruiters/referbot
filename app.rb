@@ -32,15 +32,9 @@ post '/refbot' do
     message = "Candidate creation reset."
 
   when "name"
-    if eval(candidate_content[0])[:firstname].to_s == ""
-    $redis.mapped_hmset(params[:user_id], {"candidate_0": {firstname: input[1], lastname: "", email: "", phone: "", vacancy: ""}, "step": "2"})
-    firstnameget = $redis.hmget(params[:user_id], "candidate_0")
-    message = "Added name: " + eval(firstnameget[0])[:firstname].to_s + ". Type '/refbot email <candidate email>' to add an email address. Step 2/5."
-    elsif  eval(candidate_content[0])[:firstname].to_s != ""
-    $redis.mapped_hmset(params[:user_id], {"candidate_0": {firstname: input[1], lastname: "", email: "", phone: "", vacancy: ""}, "step": "2"})
-    firstnameget = $redis.hmget(params[:user_id], "candidate_0")
-    message = "Changed name to: " + eval(firstnameget[0])[:firstname].to_s + ". Type '/refbot email <candidate email>' to add an email address. Step 2/5."
-    end
+    $redis.mapped_hmset(params[:user_id], {"candidate": {name: input[1..-1].join(" "), email: "", phone: "", vacancy: ""}, "step": "2"})
+​
+    message = "New name: " + eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s + ". \n Type '/refbot email <candidate email>' to add an email address. Step 2/5."
 
   when "email"
     if eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s != ""
