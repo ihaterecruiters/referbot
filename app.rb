@@ -53,6 +53,7 @@ post '/refbot' do
     else
       message = "First add a name using '/refbot name <candidate name>'"
     end
+  end
 
   # when "send"
   #   if eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s != ""
@@ -61,7 +62,6 @@ post '/refbot' do
   #   else
   #     message = "First add a name using '/refbot name <candidate name>'"
   #   end
-  end
 end
 
 json_message = {"text" => message, params[:user_name] => "refbot", "channel" => params[:channel_id]}
