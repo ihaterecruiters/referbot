@@ -29,16 +29,27 @@ post '/refbot' do
 
   when "reset"
     $redis.mapped_hmset(params[:user_id], {"candidate_0": {firstname: "", lastname: "", email: "", phone: "", vacancy: ""}, "step": "1"})
-  end
+    message = "Candidate creation reset."
 
-  if input[0].downcase == "name" and eval(candidate_content[0])[:firstname].to_s == ""
+  when "name"
+    if eval(candidate_content[0])[:firstname].to_s == ""
     $redis.mapped_hmset(params[:user_id], {"candidate_0": {firstname: input[1], lastname: "", email: "", phone: "", vacancy: ""}, "step": "2"})
     firstnameget = $redis.hmget(params[:user_id], "candidate_0")
     message = "Added name: " + eval(firstnameget[0])[:firstname].to_s + ". Type '/refbot email <candidate email>' to add an email address. Step 2/5."
-  elsif input[0].downcase == "name" and eval(candidate_content[0])[:firstname].to_s != ""
+    elsif  eval(candidate_content[0])[:firstname].to_s != ""
     $redis.mapped_hmset(params[:user_id], {"candidate_0": {firstname: input[1], lastname: "", email: "", phone: "", vacancy: ""}, "step": "2"})
     firstnameget = $redis.hmget(params[:user_id], "candidate_0")
     message = "Changed name to: " + eval(firstnameget[0])[:firstname].to_s + ". Type '/refbot email <candidate email>' to add an email address. Step 2/5."
+    end
+
+  when "email"
+    if eval(redis.hmget(params[:user_id], "candidate")[0])[:name].to_s != ""
+        redis.mapped_hmset(params[:user_id], {"candidate": {name: eval(redis.hmget(params[:user_id], "candidate")[0])[:name].to_s, email: input[1..-1].join(" "), phone: "", vacancy: ""}, "step": "3"})
+    ​
+        message = "New email for " + eval(redis.hmget(params[:user_id], "candidate")[0])[:name].to_s + ": " + eval(redis.hmget(params[:user_id], "candidate")[0])[:email].to_s + ". \n Type '/refbot phone <candidate phone>' to add a phone number. Step 3/5."
+      elsif eval(redis.hmget(params[:user_id], "candidate")[0])[:name].to_s == ""
+        message = "First add a name using '/refbot name <candidate name>'"
+      end
 
   end
 
