@@ -45,20 +45,18 @@ post '/refbot' do
     else
       message = "First add a name using '/refbot name <candidate name>'"
     end
-
   end
 
-  json_message = {"text" => message, params[:user_name] => "refbot", "channel" => params[:channel_id]}
+  json_message = {"text" => message, "username" => "refbot", "channel" => params[:channel_id]}
   if ENV['DEV_ENV'] == 'test'
     content_type :json
    json_message[:text] = "#{message} + #{notification}"
    json_message.to_json
   else
     slack_webhook = ENV['SLACK_WEBHOOK_URL']
-    notif_message = {"text" => notification, params[:user_name] => "refbot", "channel" => params[:channel_id]}
+    notif_message = {"text" => notification, "username" => "refbot", "channel" => params[:channel_id]}
     HTTParty.post slack_webhook, body: json_message.to_json, headers: {'content-type' => 'application/json'}
     HTTParty.post slack_webhook, body: notif_message.to_json, headers: {'content-type' => 'application/json'}
-
   end
 end
 
