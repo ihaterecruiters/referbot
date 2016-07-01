@@ -5,7 +5,6 @@ require 'redis'
 
 post '/refbot' do
   $redis = Redis.new
-  candidate_content = $redis.hmget(params[:user_id], "candidate_0")
   input = params[:text].to_s.split(' ')
   message = ""
   case input[0].downcase
@@ -42,16 +41,15 @@ post '/refbot' do
 
       message = "New email for " + eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s + ": " + eval($redis.hmget(params[:user_id], "candidate")[0])[:email].to_s + ". \n Type '/refbot phone <candidate phone>' to add a phone number. Step 3/5."
 
-      elsif eval($redis.hmget(params[:user_id], "candidate")[0])[:name].to_s == ""
-        message = "First add a name using '/refbot name <candidate name>'"
-      end
+    else
+      message = "First add a name using '/refbot name <candidate name>'"
+    end
 
   end
 
   json_message = {"text" => message, params[:user_name] => "refbot", "channel" => params[:channel_id]}
   if ENV['DEV_ENV'] == 'test'
     content_type :json
-    x = "#{json_message[:text]}"
    json_message[:text] = "#{message} + #{notification}"
    json_message.to_json
   else
