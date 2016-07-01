@@ -15,7 +15,7 @@ post '/refbot' do
     postback "Hello " + params[:user_name] + " welcome to referbot! Type /refbot help. for a list of all refbot keywords.", params[:channel_id], params[:user_name]
     break
   when 'help'
-    postback "This is a list off all the commands: /refbot hello, /refbot help, /refbot list, /refbot new, /refbot new candidate first-name last-name email phone vacancy", params[:channel_id], params[:user_name]
+    postback "This is a list off all the commands: /refbot hello, /refbot help, /refbot list, /refbot new, /refbot new candidate name email phone vacancy", params[:channel_id], params[:user_name]
     break
   when 'list'
     getlist
@@ -26,7 +26,7 @@ candidate_content = redis.hmget(params[:user_id], "candidate_0")
 
   if input[0].downcase == "new"
     if !redis.exists(params[:user_id])
-      redis.mapped_hmset(params[:user_id], {"candidate_0": {firstname: "", lastname: "", email: "", phone: "", vacancy: ""}, "step": "1"})
+      redis.mapped_hmset(params[:user_id], {"candidate_0": {name: "", email: "", phone: "", vacancy: ""}, "step": "1"})
       postback params[:user_id] + " profile does not exist in the database. Created. Type '/refbot name <candidate name>' to start adding a new candidate.", params[:channel_id], params[:user_name]
     elsif redis.exists(params[:user_id])
       postback params[:user_id] + " profile exists in the database. Type '/refbot name <candidate name>' to start adding a new candidate. Step 1/5.", params[:channel_id], params[:user_name]
@@ -34,17 +34,17 @@ candidate_content = redis.hmget(params[:user_id], "candidate_0")
   end
 
   if input[0].downcase == "reset"
-    redis.mapped_hmset(params[:user_id], {"candidate_0": {firstname: "", lastname: "", email: "", phone: "", vacancy: ""}, "step": "1"})
+    redis.mapped_hmset(params[:user_id], {"candidate_0": {name: "", email: "", phone: "", vacancy: ""}, "step": "1"})
   end
 
-  if input[0].downcase == "name" and eval(candidate_content[0])[:firstname].to_s == ""
-    redis.mapped_hmset(params[:user_id], {"candidate_0": {firstname: input[1], lastname: "", email: "", phone: "", vacancy: ""}, "step": "2"})
-    firstnameget = redis.hmget(params[:user_id], "candidate_0")
-    postback "Added name: " + eval(firstnameget[0])[:firstname].to_s + ". Type '/refbot email <candidate email>' to add an email address. Step 2/5.", params[:channel_id], params[:user_name]
-  elsif input[0].downcase == "name" and eval(candidate_content[0])[:firstname].to_s != ""
-    redis.mapped_hmset(params[:user_id], {"candidate_0": {firstname: input[1], lastname: "", email: "", phone: "", vacancy: ""}, "step": "2"})
-    firstnameget = redis.hmget(params[:user_id], "candidate_0")
-    postback "Changed name to: " + eval(firstnameget[0])[:firstname].to_s + ". Type '/refbot email <candidate email>' to add an email address. Step 2/5.", params[:channel_id], params[:user_name]
+  if input[0].downcase == "name" and eval(candidate_content[0])[:name].to_s == ""
+    redis.mapped_hmset(params[:user_id], {"candidate_0": {name: input[1], email: "", phone: "", vacancy: ""}, "step": "2"})
+    nameget = redis.hmget(params[:user_id], "candidate_0")
+    postback "Added name: " + eval(nameget[0])[:name].to_s + ". Type '/refbot email <candidate email>' to add an email address. Step 2/5.", params[:channel_id], params[:user_name]
+  elsif input[0].downcase == "name" and eval(candidate_content[0])[:name].to_s != ""
+    redis.mapped_hmset(params[:user_id], {"candidate_0": {name: input[1], email: "", phone: "", vacancy: ""}, "step": "2"})
+    nameget = redis.hmget(params[:user_id], "candidate_0")
+    postback "Changed name to: " + eval(nameget[0])[:name].to_s + ". Type '/refbot email <candidate email>' to add an email address. Step 2/5.", params[:channel_id], params[:user_name]
   end
 end
 
