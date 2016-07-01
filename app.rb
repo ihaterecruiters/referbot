@@ -27,9 +27,9 @@ post '/refbot' do
   if input[0].downcase == "new"
     if !redis.exists(params[:user_id])
       redis.mapped_hmset(params[:user_id], {"candidate": {name: "", email: "", phone: "", vacancy: ""}, "step": "1"})
-      postback params[:user_id] + " profile does not exist in the database. Created. Type '/refbot name <candidate name> to start adding a new candidate. Step 1/5.", params[:channel_id], params[:user_name]
+      postback params[:user_id] + " profile does not exist in the database. Created... Type '/refbot name <candidate name>' to start adding a new candidate. Step 1/5.", params[:channel_id], params[:user_name]
     elsif redis.exists(params[:user_id])
-      postback params[:user_id] + " profile exists in the database. Type '/refbot name <candidate name> to start adding a new candidate. Step 1/5.", params[:channel_id], params[:user_name]
+      postback params[:user_id] + " profile exists in the database. Type '/refbot name <candidate name>' to start adding a new candidate. Step 1/5.", params[:channel_id], params[:user_name]
     end
   end
 
@@ -55,13 +55,15 @@ post '/refbot' do
     redis.mapped_hmset(params[:user_id], {"candidate": {name: eval(nameget[0])[:name].to_s, email: input[1..-1].join(" "), phone: "", vacancy: ""}, "step": "3"})
     emailget = redis.hmget(params[:user_id], "candidate")
     postback "New email: " + eval(emailget[0])[:email].to_s + ". Type '/refbot phone <candidate phone>' to add a phone number. Step 3/5.", params[:channel_id], params[:user_name]
+  else
+    postback "First add a name using '/refbot name <candidate name>'", params[:channel_id], params[:user_name]
+  end
 
   # elsif input[0].downcase == "email" and eval(candidate_content[0])[:email].to_s != ""
   #   nameget = redis.hmget(params[:user_id], "candidate")
   #   redis.mapped_hmset(params[:user_id], {"candidate": {name: eval(nameget[0])[:name].to_s, email: input[1..-1].join(" "), phone: "", vacancy: ""}, "step": "3"})
   #   emailget = redis.hmget(params[:user_id], "candidate")
   #   postback "New email: " + eval(emailget[0])[:email].to_s + ". Type '/refbot email <candidate email>' to add an email address. Step 3/5.", params[:channel_id], params[:user_name]
-  end
 end
 
 
